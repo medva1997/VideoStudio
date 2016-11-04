@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using AForge.Video;
+using AForge;
+using AForge.Video.DirectShow;
+
 namespace VideoStudio
 {
     
@@ -21,9 +25,10 @@ namespace VideoStudio
         private int selected_device = 0;                                                     // выбранный сейчас девайс
         private int lastselected_device = 0;                                                 // выбранный до этого девайс
         private int counter = 0;
-        private tcpserver server;
+       // private tcpserver server;
         Timer time;
         bool flag_to_out=false;
+
 
 
         //BigpictureBox
@@ -67,12 +72,33 @@ namespace VideoStudio
 
         #endregion
 
+
+        private FilterInfoCollection VideoCaptureDevices;
+        private VideoCaptureDevice finalVideo;
+        private tcpserver2 server;
+
         public Form1()
         {
             InitializeComponent();
-            KeyPreview = true; //перелючаем  обрабодчик клавиатуры на форму           
+            KeyPreview = true; //перелючаем  обрабодчик клавиатуры на форму     
+
+            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
+            {
+                finalVideo = new VideoCaptureDevice(VideoCaptureDevice.MonikerString);
+            }
+           
             
         }
+
+        void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            
+            BigpictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
+            //server.sender((Bitmap)BigpictureBox.Image);         
+            GC.Collect();
+        }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -101,11 +127,14 @@ namespace VideoStudio
            preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
            preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
            preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
+
            settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
-           recbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
-           cutbutton.DoubleClick += new System.EventHandler(settingbutton_Click); 
+
+           settingbutton.Click += new System.EventHandler(settingbutton_Click); ;
+           //settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
+           //cutbutton.DoubleClick += new System.EventHandler(settingbutton_Click); 
             time = new Timer();
-           time.Interval = 31;
+           time.Interval =31;
            time.Enabled = true;
            time.Tick += time_Tick;
            time.Start();
@@ -115,22 +144,14 @@ namespace VideoStudio
 
         private void time_Tick(object sender, EventArgs e)
         {
-          // BigpictureBox.Image=preview[selected_device].Video_sourse_cach;
-          // Image_changer(selected_device, lastselected_device);
-            try
-            {
-                BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
-                if (flag_to_out == true)
-                {
-                    server.image = preview[selected_device].Video_sourse_cach;
-                    server.audiobyte = null;
-                }
-            }
-            catch
-            {
+            BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
 
+
+            if (flag_to_out == true)
+            {
+                server.sender(preview[selected_device].Video_sourse_cach);         
             }
-           
+          
         }
 
         private void Image_changer(int newselected_device, int lastselected_device1)
@@ -158,6 +179,7 @@ namespace VideoStudio
             }
 
         }
+
 
         private void createconponents()
         {
@@ -322,7 +344,8 @@ namespace VideoStudio
             }
 
         }
-        
+
+
           #region обработка  событий 
 
         private void Form1_KeyDown(object sender, KeyEventArgs e) //обработка нажатия клавиш на клаве
@@ -437,15 +460,16 @@ namespace VideoStudio
 
 
 
-      
+        private void settingbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        {
+            server = new tcpserver2("192.168.1.4");
+            //finalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
+            //finalVideo.Start();
+            flag_to_out = true;
+        }
 
 
         #endregion
-        private void settingbutton_Click(object sender, EventArgs e)
-        {
-            tcpserver server = new tcpserver("192.168.1.2");
-            flag_to_out = true;
-        }
 
 
     }

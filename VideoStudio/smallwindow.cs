@@ -141,6 +141,7 @@ namespace VideoStudio
              pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();     //вывод в превью  
              Videosoursecach = (Bitmap)eventArgs.Frame.Clone();
              GC.Collect();                                           // сбор мусора, т.к clone засоряет оперативную память
+
          }
 
         public void CloseCurrentVideoSource() //завершаем все потоки, если он не остановлены

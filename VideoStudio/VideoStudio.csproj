@@ -155,6 +155,7 @@
     <Compile Include="smallwindow.cs" />
     <Compile Include="tcpclient.cs" />
     <Compile Include="tcpserver.cs" />
+    <Compile Include="tcpserver2.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
