@@ -12,13 +12,19 @@ namespace VideoStudio
     
     public partial class Form1 : Form
     {
-       
+        #region объявление переменных
         private smallwindow[] preview = new smallwindow[number_of_small_panels];            // объекты предпросмотра
         private static int number_of_small_panels = 6;                                      // количество маленьких панелей
         private static int number_of_small_buttons=4;                                       // количество маленьких кнопок
         private int FormWidth;                                                              // ширина формы
         private  int FormHeight;                                                            // высота окна формы
-        public int selected_device=0;
+        private int selected_device = 0;                                                     // выбранный сейчас девайс
+        private int lastselected_device = 0;                                                 // выбранный до этого девайс
+        private int counter = 0;
+        private tcpserver server;
+        Timer time;
+        bool flag_to_out=false;
+
 
         //BigpictureBox
         private System.Windows.Forms.PictureBox BigpictureBox = new System.Windows.Forms.PictureBox();  // окно вывода главного изображения       
@@ -59,33 +65,30 @@ namespace VideoStudio
         private System.Drawing.Size settingbuttonSize;                                                  //размер кнопки настройки
 
 
-        void UserActionDelegte(object sender, EventArgs e)
-        {
-            selected_device =Convert.ToInt32( sender);
-            MessageBox.Show(Convert.ToString(sender));
-        }
+        #endregion
 
         public Form1()
         {
             InitializeComponent();
-            KeyPreview = true;
-            
+            KeyPreview = true; //перелючаем  обрабодчик клавиатуры на форму           
             
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            selected_device = 0;
            if( Sets_sizes(1366)==true)// установка параметров размеров элементов и возврат состояния корректности инициализации(true-все хорошо)
            {
-               createconponents();
-               for(int i=0; i<number_of_small_panels;i++)
+               createconponents();// создаем визуальные элементы
+
+               for(int i=0; i<number_of_small_panels;i++)// создаем объекты маленьких окон
                {
                    preview[i] = new smallwindow(smallpanels[i], smallbuttonLocation, smallbuttonSize, smallpictureBoxLocation, smallpictureBoxSize, i);
                }
            }
-
+            // подключаемся к обрабочикам событий
            this.KeyDown += new System.Windows.Forms.KeyEventHandler(Form1_KeyDown);
+           this.FormClosing += Form1_FormClosing;
            preview[0].button1.Click += new System.EventHandler(preview0button1_Click);
            preview[1].button1.Click += new System.EventHandler(preview1button1_Click);
            preview[2].button1.Click += new System.EventHandler(preview2button1_Click);
@@ -98,6 +101,62 @@ namespace VideoStudio
            preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
            preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
            preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
+           settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
+           recbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
+           cutbutton.DoubleClick += new System.EventHandler(settingbutton_Click); 
+            time = new Timer();
+           time.Interval = 31;
+           time.Enabled = true;
+           time.Tick += time_Tick;
+           time.Start();
+
+;
+        }
+
+        private void time_Tick(object sender, EventArgs e)
+        {
+          // BigpictureBox.Image=preview[selected_device].Video_sourse_cach;
+          // Image_changer(selected_device, lastselected_device);
+            try
+            {
+                BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
+                if (flag_to_out == true)
+                {
+                    server.image = preview[selected_device].Video_sourse_cach;
+                    server.audiobyte = null;
+                }
+            }
+            catch
+            {
+
+            }
+           
+        }
+
+        private void Image_changer(int newselected_device, int lastselected_device1)
+        {
+            if (newselected_device == lastselected_device1)
+            {
+                BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
+            }
+            else
+            {
+                if(counter<=10)
+                {
+                    if (counter %2==0)
+                        BigpictureBox.Image = preview[lastselected_device1].Video_sourse_cach;
+                    else
+                        BigpictureBox.Image = preview[newselected_device].Video_sourse_cach;
+                    counter++;
+                }
+                else
+                {
+                    counter = 0;
+                    lastselected_device = selected_device;
+                }
+
+            }
+
         }
 
         private void createconponents()
@@ -112,6 +171,7 @@ namespace VideoStudio
             BigpictureBox.Location = BigpictureBoxLocation;
             BigpictureBox.Size = BigpictureBoxSize;
             // pictureBox.TabIndex = 0;
+            BigpictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             this.Controls.Add(BigpictureBox);
 
             // panel
@@ -262,9 +322,9 @@ namespace VideoStudio
             }
 
         }
+        
+          #region обработка  событий 
 
-
-         // события 
         private void Form1_KeyDown(object sender, KeyEventArgs e) //обработка нажатия клавиш на клаве
         {
             switch (Convert.ToString(e.KeyValue))
@@ -285,11 +345,9 @@ namespace VideoStudio
                 case ("53"): selected_device = e.KeyValue - 49; break;
                 case ("54"): selected_device = e.KeyValue - 49; break;//6
             }
-       
-
         }
 
-        public void preview0button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview0button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 0;
@@ -297,7 +355,7 @@ namespace VideoStudio
 
         }
 
-        public void preview1button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview1button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 1;
@@ -305,7 +363,7 @@ namespace VideoStudio
 
         }
 
-        public void preview2button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview2button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 2;
@@ -313,7 +371,7 @@ namespace VideoStudio
 
         }
 
-        public void preview3button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview3button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 3;
@@ -321,7 +379,7 @@ namespace VideoStudio
 
         }
 
-        public void preview4button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview4button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 4;
@@ -329,14 +387,14 @@ namespace VideoStudio
 
         }
 
-        public void preview5button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        private void preview5button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
 
             selected_device = 5;
            // MessageBox.Show(Convert.ToString(selected_device));
 
         }
-       
+
         private void preview0pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 0;
@@ -367,14 +425,28 @@ namespace VideoStudio
             selected_device = 5;
         }
 
-        
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)// обработка закрытия формы (завершение всех потоков)
+        {
+            for (int i = 0; i < preview.Length; i++)
+            {
+                preview[i].CloseCurrentVideoSource();
+            }
+            time.Stop();
+
+        }
 
 
 
-       
+      
 
-     
 
-       
+        #endregion
+        private void settingbutton_Click(object sender, EventArgs e)
+        {
+            tcpserver server = new tcpserver("192.168.1.2");
+            flag_to_out = true;
+        }
+
+
     }
 }
