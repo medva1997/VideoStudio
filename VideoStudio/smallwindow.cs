@@ -21,11 +21,12 @@ namespace VideoStudio
     class smallwindow
     {
 
+       
         #region Объявление переменных
         public System.Windows.Forms.PictureBox pictureBox = new System.Windows.Forms.PictureBox();  // окно вывода картинки
         public System.Windows.Forms.Button button1 = new System.Windows.Forms.Button();             // кнопка on air
         private System.Windows.Forms.Button button2 = new System.Windows.Forms.Button();            // кнопка работы со звуком
-        private System.Windows.Forms.Button button3 = new System.Windows.Forms.Button();            // кнопка картинка в картинке
+        public System.Windows.Forms.Button button3 = new System.Windows.Forms.Button();            // кнопка картинка в картинке
         private System.Windows.Forms.Button button4 = new System.Windows.Forms.Button();            // кнопка настройки
         private System.Windows.Forms.Label label = new System.Windows.Forms.Label();                // надпись с номером потока
         private  Panel outpanel;                                                                    // панель на которой настологаются 4 кнопки и picturebox
@@ -61,18 +62,13 @@ namespace VideoStudio
         private Bitmap Videosoursecach=null;                                                        // переменна для хранения текущего кадра 
         private tcpclient client= new tcpclient();                                                  // подкючение к другому пк
         private VideoFileWriter Videowriter1;                                                       // запись видео в файл
+        Bitmap img;                                                                                 // переменная хранит заставку и выдает ее на выход если нет видео входа
 
-       
-        
         #endregion
 
-        public Semaphore semofvideo=new Semaphore(0,1);// семафор получения доступа к bitmap
-        
-        
-
-       
-
-        
+        private int frames_now;
+        System.Windows.Forms.Timer timer;
+               
         public void CloseCurrentVideoSource() //завершаем все потоки, если он не остановлены
          {
 
@@ -164,10 +160,7 @@ namespace VideoStudio
             MessageBox.Show("2");
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("3");
-        }
+       
 
         #region запуск захвата аудио и видео
 
@@ -184,13 +177,28 @@ namespace VideoStudio
             videosource.NewFrame += new NewFrameEventHandler(player_NewFrame); // подписываемся на событие прихода нового видео кадра
             videosource.Start();
 
+             timer = new System.Windows.Forms.Timer();
+            timer.Tick += timer_Tick;
+            timer.Interval = 1000;
+            timer.Start();
+
+
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            frames_now = videosource.FramesReceived;
+            label.Text = Convert.ToString(frames_now);
         }
         #endregion
 
 
         public smallwindow(Panel outpanel, System.Drawing.Point[] smallbuttonLocation, System.Drawing.Size[] smallbuttonSize, System.Drawing.Point smallpictureBoxLocation, System.Drawing.Size smallpictureBoxSize, int id)
         {
-          semofvideo.Release(1);
+         
+          System.IO.FileStream fs = new System.IO.FileStream("foto.jpg", System.IO.FileMode.Open);
+          img =(Bitmap) System.Drawing.Image.FromStream(fs);
+          fs.Close();
             // передача параметров конструктора в поля
             this.outpanel = outpanel;
             this.smallbuttonLocation = smallbuttonLocation;
@@ -209,18 +217,15 @@ namespace VideoStudio
                 MessageBox.Show("Ошибка: 703");
             }
             // подписываемся на события кликов мышью  (первую клавишу обрабатывает form1)    
-            button2.Click += new System.EventHandler(button2_Click);
-            button3.Click += new System.EventHandler(button3_Click);
+            button2.Click += new System.EventHandler(button2_Click);          
             button4.Click += new System.EventHandler(button4_Click);
-
         }
 
        
          public smallwindow()
         {
 
-        }
-       
+        }    
 
 
         public void update_information()//обновленние полученной информации если выбран удаленный пк
@@ -250,9 +255,13 @@ namespace VideoStudio
                     stoprec();                  // остановка записи
                     change_video();             // смена видео источника
                     change_audio();             // смена аудио источника
-                    if (flag == true)
+                    if (form_had_been_opened == true)
                     {
-                        MessageBox.Show("Так как вы сменили источник, то запись с этого источника продолжится только после команды CUT или REC");
+                        if (flag == true)
+                        {
+                            MessageBox.Show("Запись с этого источника начнется только после команды CUT или REC");
+                        }
+                        checkbox3 = flag;//возврат положения 
                     }
                 }
                 else
@@ -280,7 +289,7 @@ namespace VideoStudio
                         MessageBox.Show("Ошибка остановки захвата с источников");
                     }
 
-                    //////// запуск  получения  картинки с друго компа
+           //////// запуск  получения  картинки с друго компа
 
                 }
                 forms_of_selection.all_right = false;             // меняем значение на false, чтобы при дальнейшем закрытии формы, мы не вернулись сюда
@@ -316,6 +325,7 @@ namespace VideoStudio
                        videosource.SignalToStop();
                        videosource.WaitForStop();
                        videosource.Stop();
+                       timer.Stop();
                    }
                    videosource = cashvideosource;  //меняем девайс
                    OpenVideoSource();// запускаем                           
@@ -327,6 +337,7 @@ namespace VideoStudio
                        videosource.SignalToStop();
                        videosource.WaitForStop();
                        videosource.Stop();
+                       timer.Stop();
                    }
                }
            }
@@ -365,9 +376,9 @@ namespace VideoStudio
             try
             {
                 pictureBox.Image = (Bitmap)eventArgs.Frame.Clone(); //вывод в превью  
-                semofvideo.WaitOne();               
+                              
                 Videosoursecach = (Bitmap)eventArgs.Frame.Clone();
-                semofvideo.Release(1);
+               
                 GC.Collect(); // сбор мусора, т.к clone засоряет оперативную память
             }
             catch
@@ -417,7 +428,16 @@ namespace VideoStudio
         {
             get
             {
-                return Videosoursecach;                
+               
+             
+                if(Videosoursecach!=null)
+                {
+                    return Videosoursecach;   
+                }
+                else
+                {
+                    return img;
+                }
             }
         }
 
@@ -441,12 +461,9 @@ namespace VideoStudio
         {
             if (checkbox3 == true)
             {
-                if (Videowriter1 != null)
+                if (Videowriter1.IsOpen != false)
                 {
-                    semofvideo.WaitOne();
-                    Videowriter1.WriteVideoFrame(Videosoursecach);
-                    semofvideo.Release();
-
+                    Videowriter1.WriteVideoFrame(Videosoursecach);                    
                 }
             }
 

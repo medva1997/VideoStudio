@@ -377,7 +377,7 @@ namespace VideoStudio
                     if (comboBox1.SelectedIndex == 1)// поток с монитора
                     {
 
-                        videosource = new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 40);
+                        videosource = new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 10);
                     }
 
                     if (comboBox1.SelectedIndex == 2)// поток из файла
