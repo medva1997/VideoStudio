@@ -16,17 +16,19 @@ using NAudio.CoreAudioApi;
 
 namespace VideoStudio
 {
-    
 
     class smallwindow
     {
 
        
         #region Объявление переменных
+
+        #region объекты формы
+        
         public System.Windows.Forms.PictureBox pictureBox = new System.Windows.Forms.PictureBox();  // окно вывода картинки
         public System.Windows.Forms.Button button1 = new System.Windows.Forms.Button();             // кнопка on air
         private System.Windows.Forms.Button button2 = new System.Windows.Forms.Button();            // кнопка работы со звуком
-        public System.Windows.Forms.Button button3 = new System.Windows.Forms.Button();            // кнопка картинка в картинке
+        public System.Windows.Forms.Button button3 = new System.Windows.Forms.Button();             // кнопка картинка в картинке
         private System.Windows.Forms.Button button4 = new System.Windows.Forms.Button();            // кнопка настройки
         private System.Windows.Forms.Label label = new System.Windows.Forms.Label();                // надпись с номером потока
         private  Panel outpanel;                                                                    // панель на которой настологаются 4 кнопки и picturebox
@@ -36,6 +38,9 @@ namespace VideoStudio
         private System.Drawing.Size smallpictureBoxSize;                                            // размер pictureBox
         private int id;                                                                             //номер потока/камеры
 
+        #endregion
+
+        #region данные окна маленьких настроек
 
         private Form2 forms_of_selection;                                                           // вспомогательная форма для настойка водных параметров
         private bool checkBox1_Checked;                                                             // выбрано ли использование видео устройства
@@ -46,7 +51,8 @@ namespace VideoStudio
         private string textbox;                                                                     // частота дискретизации
         private bool form_had_been_opened;                                                          // флаг на использование ранее сохраненных данных true- испльзовать
         private bool checkbox3;
-
+       
+        # endregion 
 
         private IVideoSource videosource;                                                           // видео поток       
         private IVideoSource cashvideosource;                                                       // временная переменная для смены видеопотоков
@@ -64,10 +70,15 @@ namespace VideoStudio
         private VideoFileWriter Videowriter1;                                                       // запись видео в файл
         Bitmap img;                                                                                 // переменная хранит заставку и выдает ее на выход если нет видео входа
 
+        private bool Isrecordworkingnow=false;                                                      // переменная хранит значение работает ли сейчас кнопка записи (по умолчанию false)
+
         #endregion
 
-        private int frames_now;
-        System.Windows.Forms.Timer timer;
+
+        public delegate void MethodContainer();
+
+        //Событие OnCount c типом делегата MethodContainer.
+        public event MethodContainer pictureboxchanger;
                
         public void CloseCurrentVideoSource() //завершаем все потоки, если он не остановлены
          {
@@ -157,7 +168,7 @@ namespace VideoStudio
 
         private void button2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("2");
+            //MessageBox.Show("2");
         }
 
        
@@ -168,7 +179,7 @@ namespace VideoStudio
         {
             AudiosourceStream.StartRecording();// получение потока
           
-            AudiosourceStream.DataAvailable += new EventHandler<NAudio.Wave.WaveInEventArgs>(sourceStream_DataAvailable);            
+            AudiosourceStream.DataAvailable += new EventHandler<NAudio.Wave.WaveInEventArgs>(sourceStream_DataAvailable);  // подписываемся на событие получения звука          
         }
 
         private void OpenVideoSource()// запуск захвата видео
@@ -177,28 +188,33 @@ namespace VideoStudio
             videosource.NewFrame += new NewFrameEventHandler(player_NewFrame); // подписываемся на событие прихода нового видео кадра
             videosource.Start();
 
-             timer = new System.Windows.Forms.Timer();
-            timer.Tick += timer_Tick;
-            timer.Interval = 1000;
-            timer.Start();
-
-
         }
 
-        void timer_Tick(object sender, EventArgs e)
-        {
-            frames_now = videosource.FramesReceived;
-            label.Text = Convert.ToString(frames_now);
-        }
+       
         #endregion
 
+        void CreateBitmap() //создание битмапа если нет изображения в папке
+        {
+            System.Drawing.Bitmap flag = new System.Drawing.Bitmap(720, 720);
+            for (int x = 0; x < flag.Height; ++x)
+                for (int y = 0; y < flag.Width; ++y)
+                    flag.SetPixel(x, y, Color.Black);
+           
+            img= flag;
+        }
 
         public smallwindow(Panel outpanel, System.Drawing.Point[] smallbuttonLocation, System.Drawing.Size[] smallbuttonSize, System.Drawing.Point smallpictureBoxLocation, System.Drawing.Size smallpictureBoxSize, int id)
         {
-         
-          System.IO.FileStream fs = new System.IO.FileStream("foto.jpg", System.IO.FileMode.Open);
-          img =(Bitmap) System.Drawing.Image.FromStream(fs);
-          fs.Close();
+            try
+            {//попытка получить картинку заставку
+                System.IO.FileStream fs = new System.IO.FileStream("foto.jpg", System.IO.FileMode.Open);
+                img = (Bitmap)System.Drawing.Image.FromStream(fs);
+                fs.Close();
+            }
+            catch
+            {
+                CreateBitmap();// создаем черный битмап
+            }
             // передача параметров конструктора в поля
             this.outpanel = outpanel;
             this.smallbuttonLocation = smallbuttonLocation;
@@ -211,12 +227,15 @@ namespace VideoStudio
             try
             {
                 drawing();// отрисовка 4 кнопок, номера камеры, picturebox
+                button2.Enabled = false;
+                
+                    
             }
             catch
             {
-                MessageBox.Show("Ошибка: 703");
+                MessageBox.Show("Ошибка: 703( не возможно создать элементы интерфейса");
             }
-            // подписываемся на события кликов мышью  (первую клавишу обрабатывает form1)    
+            // подписываемся на события кликов мышью  (первую и третью клавишу обрабатывает form1)    
             button2.Click += new System.EventHandler(button2_Click);          
             button4.Click += new System.EventHandler(button4_Click);
         }
@@ -228,17 +247,17 @@ namespace VideoStudio
         }    
 
 
-        public void update_information()//обновленние полученной информации если выбран удаленный пк
-        {
-            if (index_of_combobox1 == 5)
-            {
-                Videosoursecach = client.Image;
-                pictureBox.Image = client.Image;
-                Audiosourcebuffer = client.bytedata;
-                Audiosourceoffset = client.return_offset;
-                AudiosourceBytesRecorded = client.return_recv;
-            }
-        }
+        //public void update_information()//обновленние полученной информации если выбран удаленный пк
+        //{
+        //    if (index_of_combobox1 == 5)
+        //    {
+        //        Videosoursecach = client.Image;
+        //        pictureBox.Image = client.Image;
+        //        Audiosourcebuffer = client.bytedata;
+        //        Audiosourceoffset = client.return_offset;
+        //        AudiosourceBytesRecorded = client.return_recv;
+        //    }
+        //}
 
         private void forms_of_selection_FormClosing(object sender, FormClosingEventArgs e) // обработка закрытия формы настройки
         {
@@ -248,21 +267,26 @@ namespace VideoStudio
                 
                 forms_of_selection.Dispose();//уничтожение form2
 
+                if(checkBox2_Checked==true)
+                {
+                    change_audio();             // смена аудио источника
+                }
+
                 if (index_of_combobox1 != 5)// если не выбран показ с друго пк
                 {
-                    bool flag = checkbox3;
-                    checkbox3 = false;          //блокировка записи
+                    bool flag = checkbox3;      //блокировка записи
                     stoprec();                  // остановка записи
                     change_video();             // смена видео источника
-                    change_audio();             // смена аудио источника
+                   
                     if (form_had_been_opened == true)
                     {
                         if (flag == true)
                         {
-                            MessageBox.Show("Запись с этого источника начнется только после команды CUT или REC");
-                        }
-                        checkbox3 = flag;//возврат положения 
+                           MessageBox.Show("Запись с этого источника начнется только после команды CUT или REC");
+                        }                      
+                        
                     }
+                    form_had_been_opened = true;// поднимаем флаг, что мы уже открывали форму
                 }
                 else
                 {
@@ -299,34 +323,48 @@ namespace VideoStudio
 
        private void copy_data_from_form2()// сохранение информации из form2
         {
-            cashvideosource = forms_of_selection.Video;         // устанавливаем значение будущего видео потока
-            cashAudiosourceStream = forms_of_selection.Audio; // устанавливаем значение будущего аудио потока
+            try
+            {
+                cashvideosource = forms_of_selection.Video;         // устанавливаем значение будущего видео потока
+                cashAudiosourceStream = forms_of_selection.Audio; // устанавливаем значение будущего аудио потока
 
-            // сохранение информации для повторной инициализации формы
-            checkBox1_Checked = forms_of_selection.checkBox1_was_Checked;
-            checkBox2_Checked = forms_of_selection.checkBox2_was_Checked;
-            index_of_combobox1 = forms_of_selection.index_combobox1;
-            index_of_combobox3 = forms_of_selection.index_combobox3;
-            text_of_combobox2 = forms_of_selection.text_of_combobox2;
-            textbox = forms_of_selection.text_of_textbox;
-            checkbox3 = forms_of_selection.CheckBox3_cheched;
-            form_had_been_opened = true;// поднимаем флаг, что мы уже открывали форму
+                // сохранение информации для повторной инициализации формы
+                checkBox1_Checked = forms_of_selection.checkBox1_was_Checked;
+                checkBox2_Checked = forms_of_selection.checkBox2_was_Checked;
+                index_of_combobox1 = forms_of_selection.index_combobox1;
+                index_of_combobox3 = forms_of_selection.index_combobox3;
+                text_of_combobox2 = forms_of_selection.text_of_combobox2;
+                textbox = forms_of_selection.text_of_textbox;
+                checkbox3 = forms_of_selection.CheckBox3_cheched;
+            }
+            catch
+            {
+
+            }
         }
 
        private void change_video()
        {
            try
            {
-
                if (checkBox1_Checked == true)            // запуск процедуры захвата видео с нового потока
                {
                    if (videosource.IsRunning == true) //останавливаем видио поток
                    {
                        videosource.SignalToStop();
                        videosource.WaitForStop();
-                       videosource.Stop();
-                       timer.Stop();
+                       videosource.Stop();                      
                    }
+                   pictureBox.Dispose();
+                   pictureBox = null;
+                   pictureBox = new PictureBox();
+                   pictureBox.BackColor = System.Drawing.Color.Black;
+                   pictureBox.Location = smallpictureBoxLocation;
+                   pictureBox.Size = smallpictureBoxSize;
+                   // pictureBox.BorderStyle = BorderStyle.Fixed3D;
+                   pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                   outpanel.Controls.Add(pictureBox);
+                   pictureboxchanger();
                    videosource = cashvideosource;  //меняем девайс
                    OpenVideoSource();// запускаем                           
                }
@@ -337,15 +375,15 @@ namespace VideoStudio
                        videosource.SignalToStop();
                        videosource.WaitForStop();
                        videosource.Stop();
-                       timer.Stop();
+                      
                    }
                }
            }
            catch
            {
-               MessageBox.Show("Ошибка: 705 (Ошибка смены видео входа)");
+               MessageBox.Show("Ошибка: 705 (Ошибка смены видеовхода)");
            }
-       }// смена видео входа
+       }// смена видеовхода
 
        private void change_audio()
        {
@@ -366,9 +404,9 @@ namespace VideoStudio
            }
            catch
            {
-               MessageBox.Show("Ошибка: 704 (Ошибка смены аудио входа)");
+               MessageBox.Show("Ошибка: 704 (Ошибка смены аудиовхода)");
            }
-       }// смена аудио входа
+       }// смена аудиовхода
 
 
         private void player_NewFrame(object sender, NewFrameEventArgs eventArgs)// событие связанное с  появление нового изображения в потоке
@@ -383,8 +421,8 @@ namespace VideoStudio
             }
             catch
             {
-
             }
+
         }
 
         private void sourceStream_DataAvailable(object sender, NAudio.Wave.WaveInEventArgs e)// захват аудио потока и сохраниния в буфера
@@ -392,6 +430,11 @@ namespace VideoStudio
             AudiosourceBytesRecorded = e.BytesRecorded;
             Audiosourcebuffer = e.Buffer;
             Audiosourceoffset = 0;
+
+            if(Isrecordworkingnow == true)
+            {
+                audiowriter();
+            }
         }
        
         # region Свойства
@@ -451,6 +494,7 @@ namespace VideoStudio
             {
                 if (waveWriter != null)
                 {
+                    if (Audiosourcebuffer!=null)
                     waveWriter.Write(Audiosourcebuffer, Audiosourceoffset, AudiosourceBytesRecorded);
                     waveWriter.Flush();
                 }
@@ -461,9 +505,12 @@ namespace VideoStudio
         {
             if (checkbox3 == true)
             {
-                if (Videowriter1.IsOpen != false)
+                if (Videowriter1 != null)
                 {
-                    Videowriter1.WriteVideoFrame(Videosoursecach);                    
+                    if (Videowriter1.IsOpen != false)
+                    {
+                        Videowriter1.WriteVideoFrame(Videosoursecach);
+                    }
                 }
             }
 
@@ -478,6 +525,7 @@ namespace VideoStudio
 
         public void startrec(string new_folder)//запуск записи
         {
+            Isrecordworkingnow = true;
             if (checkbox3 == true)
             {
                 if (checkBox1_Checked == true)
@@ -497,6 +545,8 @@ namespace VideoStudio
                     {
                         MessageBox.Show("Ошибка создания файла для записи видео" + id);
                     }
+
+                    Isrecordworkingnow = true;
 
                 }
 
@@ -520,6 +570,7 @@ namespace VideoStudio
 
         public void stoprec()//остановка записи 
         {
+            Isrecordworkingnow = false;
             try
             {
                 if (waveWriter != null)
@@ -567,27 +618,27 @@ namespace VideoStudio
              button1.Location = smallbuttonLocation[0];
              button1.Size = smallbuttonSize[0];
              button1.UseVisualStyleBackColor = true;
-             button1.Text = "on air";
+             button1.Text = "On air";
              outpanel.Controls.Add(button1);
 
              //smallbutton 2
              button2.Location = smallbuttonLocation[1];
              button2.Size = smallbuttonSize[1];
              button2.UseVisualStyleBackColor = true;
-             button2.Text = "звук";
+             button2.Text = "Sound";
              outpanel.Controls.Add(button2);
 
              //smallbutton 3
              button3.Location = smallbuttonLocation[2];
              button3.Size = smallbuttonSize[2];
-             button3.Text = "PiP";
+             button3.Text = "Pic-in-Pic";
              button3.UseVisualStyleBackColor = true;
              outpanel.Controls.Add(button3);
 
              //smallbutton 4
              button4.Location = smallbuttonLocation[3];
              button4.Size = smallbuttonSize[3];
-             button4.Text = "Настройка";
+             button4.Text = "Setup";
              button4.UseVisualStyleBackColor = true;
              outpanel.Controls.Add(button4);
 
@@ -600,14 +651,28 @@ namespace VideoStudio
              outpanel.Controls.Add(pictureBox);
 
              // label
-             label.Location = new System.Drawing.Point(10, 195);
-             label.Text = Convert.ToString(id + 1);
+            if(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width<1810)
+            {
+                label.Location = new System.Drawing.Point(2, 190);
+            }
+            else
+            {
+                label.Location = new System.Drawing.Point(4, 290);
+            }
+             label.Font = new Font("Arial", 12, FontStyle.Bold);
+            switch(id)
+            {
+                case (0): label.Text = Convert.ToString("1 q"); break;
+                case (1): label.Text = Convert.ToString("2 w"); break;
+                case (2): label.Text = Convert.ToString("3 e"); break;
+                case (3): label.Text = Convert.ToString("4 r"); break;
+                case (4): label.Text = Convert.ToString("5 t"); break;
+                case (5): label.Text = Convert.ToString("6 y"); break;
+            }
+                        
              outpanel.Controls.Add(label);
 
          }
 
-
-
-      
     }
 }

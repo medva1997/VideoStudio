@@ -71,17 +71,18 @@ namespace VideoStudio
         private System.Drawing.Point settingbuttonLocation;                                             // верхний левый угол кнопки настройки
         private System.Drawing.Size settingbuttonSize;                                                  //размер кнопки настройки
 
-
+        Color button_color;
        
 
         #endregion
 
         //временные переменные
-      
+
+        string paramsforffmpeg; //строка параметров дл ffmpeg
         int port = 5000;   // номер порта для вывода информации
         bool rec_main;
         bool rec_all;
-        string more_settings="";
+        string more_settings="";//дополнительные настройки
         string ipaddress;
 
         private tcpserver server=new tcpserver();
@@ -93,14 +94,14 @@ namespace VideoStudio
         int audiocounter;
         byte[] buffer;
 
-        System.Windows.Forms.Timer time;
-        System.Windows.Forms.Timer time2;
+        System.Windows.Forms.Timer time;// система сохранения
+        System.Windows.Forms.Timer time2; //создание картинки + сеть
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
             selected_device = 0;
-            if (Sets_sizes(1366) == true)// установка параметров размеров элементов и возврат состояния корректности инициализации(true-все хорошо)
+            if (Sets_sizes(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width) == true)// установка параметров размеров элементов и возврат состояния корректности инициализации(true-все хорошо)
             {
                 createconponents();// создаем визуальные элементы
 
@@ -108,11 +109,11 @@ namespace VideoStudio
                 {
                       preview[i] = new smallwindow(smallpanels[i], smallbuttonLocation, smallbuttonSize, smallpictureBoxLocation, smallpictureBoxSize, i);
                 }
-            }          
-            
+            }
+            button_color = recbutton.BackColor;
             Click_event();  // подключение к обработке событий
 
-
+            change_onair_color();
             time = new System.Windows.Forms.Timer(); //таймер1
             time.Interval = 31;
             time.Enabled = true;
@@ -129,7 +130,7 @@ namespace VideoStudio
 
         private void time_Tick(object sender, EventArgs e)// обработка пеервого таймера
         {
-            worker1(); 
+            worker1(); //система записи
 
         }
 
@@ -137,11 +138,11 @@ namespace VideoStudio
         {
 
 
-            Bitmap result2 = new Bitmap(nWidth, nHeight);
+            Bitmap result2 = new Bitmap(nWidth, nHeight);//зум картинки
             using (Graphics g = Graphics.FromImage(result2))
                 g.DrawImage(preview[selected_device].Video_sourse_cach, 0, 0, nWidth, nHeight);
 
-            if (second_selected_device != -1)//pip
+            if (second_selected_device != -1)//pip зум и наложение
             {
                 using (Graphics g = Graphics.FromImage(result2))
                     g.DrawImage(preview[second_selected_device].Video_sourse_cach, nWidth - nWidth / 3 - 20, nHeight - nHeight / 3 - 20, nWidth / 3, nHeight / 3);
@@ -158,9 +159,7 @@ namespace VideoStudio
         }
 
 
-        
-
-        private void worker1()
+        private void worker1()//запись в файлы
         {
             //for (int i = 0; i < number_of_small_panels; i++) // переделать стуктуру приема по сети
             //{
@@ -169,47 +168,25 @@ namespace VideoStudio
 
             if (Record_is_work == true)// запись
             {
-                //if ((videocouner != 15 && videocouner != 30) && videocouner != 8)//
-                //{
                 for (int i = 0; i < number_of_small_panels; i++)
                 {
                     preview[i].videowriter();
                 }
-                videocouner++;
-                //}
-                //else
+                //videocouner++;
+              
+                //if (videocouner > 30)
                 //{
-                //    videocouner++;
+                //    videocouner = 0;
                 //}
-                if (videocouner > 29)
-                {
-                    videocouner = 0;
-                }
 
-
-                if (videocouner % 3 == 0)
-                {
-                    for (int i = 0; i < number_of_small_panels; i++)
-                    {
-                        preview[i].audiowriter();
-                    }
-                }
+                //if (videocouner % 3 == 0)
+                //{
+                //    for (int i = 0; i < number_of_small_panels; i++)
+                //    {
+                //        preview[i].audiowriter();
+                //    }
+                //}
             }
-
-
-           
-
-            //if (flag_to_out == true)
-            //{
-            //    server.sender(result); //отправка по сети
-
-            //    //if (audiocounter % 3 == 0)
-            //    //{
-            //    //    buffer = preview[0].Audiobuffer;
-            //    //    server.Audiobuffer = buffer;
-            //    //    server.Recorded();
-            //    //}
-            //}
 
             GC.Collect(); // сбор мусора
         }
@@ -275,6 +252,7 @@ namespace VideoStudio
                 rec_main = settings.rec_main;
                 rec_all = settings.rec_all;
                 way_to_folder = settings.folder;
+                
 
                 if (settings.online == true)
                 {
@@ -282,6 +260,7 @@ namespace VideoStudio
                     more_settings = settings.more_settings;
                     port = settings.port;
                     online = settings.online;
+                    paramsforffmpeg = settings.mainparams;
 
                 }
                 else
@@ -302,8 +281,12 @@ namespace VideoStudio
                 {
 
                 }
-
-                server = new tcpserver(port);
+                if (settings.online == true)
+                {
+                    server = new tcpserver(port+1,paramsforffmpeg);// используется порт+1 для отправки в ffmpeg
+                    Thread.Sleep(10);
+                    server.ffmpeg();
+                }
 
 
             } 
@@ -348,39 +331,43 @@ namespace VideoStudio
 
         #endregion
 
-        
-
         #region Click on Air
 
         private void preview0button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 0;
+            change_onair_color();
         }
 
         private void preview1button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 1;
+            change_onair_color();
         }
 
         private void preview2button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 2;
+            change_onair_color();
         }
 
         private void preview3button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 3;
+            change_onair_color();
 
         }
 
         private void preview4button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 4;
+            change_onair_color();
         }
 
         private void preview5button1_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             selected_device = 5;
+            change_onair_color();
         }
 
         #endregion
@@ -390,31 +377,37 @@ namespace VideoStudio
         private void preview0pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 0;
+            change_onair_color();
         }
 
         private void preview1pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 1;
+            change_onair_color();
         }
 
         private void preview2pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 2;
+            change_onair_color();
         }
 
         private void preview3pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 3;
+            change_onair_color();
         }
 
         private void preview4pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 4;
+            change_onair_color();
         }
 
         private void preview5pictureBox_DoubleClick(object sender, EventArgs e)// обработка двойного щелчка на окно превью
         {
             selected_device = 5;
+            change_onair_color();
         }
 
         #endregion
@@ -425,20 +418,20 @@ namespace VideoStudio
             switch (Convert.ToString(e.KeyValue))
             {
                 // numlock                
-                case ("97"): selected_device = e.KeyValue - 97; break;//1
-                case ("98"): selected_device = e.KeyValue - 97; break;
-                case ("99"): selected_device = e.KeyValue - 97; break;
-                case ("100"): selected_device = e.KeyValue - 97; break;
-                case ("101"): selected_device = e.KeyValue - 97; break;
-                case ("102"): selected_device = e.KeyValue - 97; break;//6
+                case ("97"): selected_device = e.KeyValue - 97; change_onair_color(); break;//1
+                case ("98"): selected_device = e.KeyValue - 97; change_onair_color(); break;
+                case ("99"): selected_device = e.KeyValue - 97; change_onair_color(); break;
+                case ("100"): selected_device = e.KeyValue - 97; change_onair_color(); break;
+                case ("101"): selected_device = e.KeyValue - 97; change_onair_color(); break;
+                case ("102"): selected_device = e.KeyValue - 97; change_onair_color(); break;//6
 
                 //обычные клавиши
-                case ("49"): selected_device = e.KeyValue - 49; break;//1
-                case ("50"): selected_device = e.KeyValue - 49; break;
-                case ("51"): selected_device = e.KeyValue - 49; break;
-                case ("52"): selected_device = e.KeyValue - 49; break;
-                case ("53"): selected_device = e.KeyValue - 49; break;
-                case ("54"): selected_device = e.KeyValue - 49; break;//6
+                case ("49"): selected_device = e.KeyValue - 49; change_onair_color(); break;//1
+                case ("50"): selected_device = e.KeyValue - 49; change_onair_color(); break;
+                case ("51"): selected_device = e.KeyValue - 49; change_onair_color(); break;
+                case ("52"): selected_device = e.KeyValue - 49; change_onair_color(); break;
+                case ("53"): selected_device = e.KeyValue - 49; change_onair_color(); break;
+                case ("54"): selected_device = e.KeyValue - 49; change_onair_color(); break;//6
 
                 //qwerty for pic
                 case ("81"): pip(0); break;//1
@@ -461,17 +454,89 @@ namespace VideoStudio
 
         }
 
+        #region pictureboxchanger
+
+        void preview0_pictureboxchanger()
+        {
+            preview[0].pictureBox.Click -= new System.EventHandler(preview0pictureBox_DoubleClick); //отписываемся от старых
+            preview[0].pictureBox.DoubleClick -= new System.EventHandler(preview0pictureBox_DoubleClick);//отписываемся от старых
+            preview[0].pictureBox.Click += new System.EventHandler(preview0pictureBox_DoubleClick); //подписываемся на новые
+            preview[0].pictureBox.DoubleClick += new System.EventHandler(preview0pictureBox_DoubleClick); //подписываемся на новые
+        }
+
+        void preview1_pictureboxchanger()
+        {
+            preview[1].pictureBox.Click -= new System.EventHandler(preview1pictureBox_DoubleClick);
+            preview[1].pictureBox.DoubleClick -= new System.EventHandler(preview1pictureBox_DoubleClick);
+            preview[1].pictureBox.Click += new System.EventHandler(preview1pictureBox_DoubleClick);
+            preview[1].pictureBox.DoubleClick += new System.EventHandler(preview1pictureBox_DoubleClick);
+        }
+
+        void preview2_pictureboxchanger()
+        {
+            preview[2].pictureBox.Click -= new System.EventHandler(preview2pictureBox_DoubleClick);
+            preview[2].pictureBox.DoubleClick -= new System.EventHandler(preview2pictureBox_DoubleClick);
+            preview[2].pictureBox.Click += new System.EventHandler(preview2pictureBox_DoubleClick);
+            preview[2].pictureBox.DoubleClick += new System.EventHandler(preview2pictureBox_DoubleClick);
+        }
+
+        void preview3_pictureboxchanger()
+        {
+            preview[3].pictureBox.Click -= new System.EventHandler(preview3pictureBox_DoubleClick);
+            preview[3].pictureBox.DoubleClick -= new System.EventHandler(preview3pictureBox_DoubleClick);
+            preview[3].pictureBox.Click += new System.EventHandler(preview3pictureBox_DoubleClick);
+            preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
+        }
+
+        void preview4_pictureboxchanger()
+        {
+            preview[4].pictureBox.Click -= new System.EventHandler(preview4pictureBox_DoubleClick);
+            preview[4].pictureBox.DoubleClick -= new System.EventHandler(preview4pictureBox_DoubleClick);
+            preview[4].pictureBox.Click += new System.EventHandler(preview4pictureBox_DoubleClick);
+            preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
+        }
+
+        void preview5_pictureboxchanger()
+        {
+            preview[5].pictureBox.Click -= new System.EventHandler(preview5pictureBox_DoubleClick);
+            preview[5].pictureBox.DoubleClick -= new System.EventHandler(preview5pictureBox_DoubleClick);
+            preview[5].pictureBox.Click += new System.EventHandler(preview5pictureBox_DoubleClick);
+            preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
+        }
+
         #endregion
 
-        private void pip(int new_second_dev)// смена видеовхода картинка в картинке
+        #endregion
+
+        private void change_onair_color()// изменение цвета текущего источника 
+        {
+            for (int i = 0; i < number_of_small_panels; i++)
+            {
+                preview[i].button1.BackColor = button_color;
+            }
+            preview[selected_device].button1.BackColor = Color.Red; 
+        }
+
+        private void change_pip_color()// обнуление цвета клавиш pip
+        {
+            for (int i = 0; i < number_of_small_panels; i++)
+            {
+                preview[i].button3.BackColor = button_color;
+            }
+        }
+
+        private void pip(int new_second_dev)// смена видеовхода картинка в картинке и смена цвета кнопки pip
         {
             if (second_selected_device != new_second_dev)
             {
                 second_selected_device = new_second_dev;
+                change_pip_color();
+                preview[second_selected_device].button3.BackColor = Color.Red;
             }
             else
             {
                 second_selected_device = -1;
+                change_pip_color();
             }
 
         }
@@ -497,6 +562,14 @@ namespace VideoStudio
             preview[4].button3.Click += new System.EventHandler(preview4button3_Click);
             preview[5].button3.Click += new System.EventHandler(preview5button3_Click);
 
+            // Click to air
+            preview[0].pictureBox.Click += new System.EventHandler(preview0pictureBox_DoubleClick);
+            preview[1].pictureBox.Click += new System.EventHandler(preview1pictureBox_DoubleClick);
+            preview[2].pictureBox.Click += new System.EventHandler(preview2pictureBox_DoubleClick);
+            preview[3].pictureBox.Click += new System.EventHandler(preview3pictureBox_DoubleClick);
+            preview[4].pictureBox.Click += new System.EventHandler(preview4pictureBox_DoubleClick);
+            preview[5].pictureBox.Click += new System.EventHandler(preview5pictureBox_DoubleClick);
+
             // DoubleClick to air
             preview[0].pictureBox.DoubleClick += new System.EventHandler(preview0pictureBox_DoubleClick);
             preview[1].pictureBox.DoubleClick += new System.EventHandler(preview1pictureBox_DoubleClick);
@@ -504,14 +577,26 @@ namespace VideoStudio
             preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
             preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
             preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
+
             // клавиша настроек
             settingbutton.Click += new System.EventHandler(settingbutton_Click);
+
             // клавиша записи
             recbutton.Click += new System.EventHandler(recbutton_Click);
+
             // клавиша нарезки записи видео
             cutbutton.Click += new System.EventHandler(cutbutton_Click);
+           // подписка на событие  переинициализаци
+            preview[0].pictureboxchanger += preview0_pictureboxchanger;
+            preview[1].pictureboxchanger += preview1_pictureboxchanger;
+            preview[2].pictureboxchanger += preview2_pictureboxchanger;
+            preview[3].pictureboxchanger += preview3_pictureboxchanger;
+            preview[4].pictureboxchanger += preview4_pictureboxchanger;
+            preview[5].pictureboxchanger += preview5_pictureboxchanger;
 
         }
+
+        
 
         private void createconponents()// создание объектов с нужными размерами
         {
@@ -532,7 +617,7 @@ namespace VideoStudio
 
             panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            panel.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            panel.BackColor = Form1.DefaultBackColor;
             panel.Location = panelLocation;
             panel.Size = panelSize;
             this.Controls.Add(panel);
@@ -566,7 +651,7 @@ namespace VideoStudio
 
             recbutton.Location = recbuttonLocation;
             recbutton.Size = recbuttonSize;
-            recbutton.Text = "rec/stop";
+            recbutton.Text = "Rec/Stop";
             recbutton.TabIndex = 1;
             this.Controls.Add(recbutton);
 
@@ -574,7 +659,7 @@ namespace VideoStudio
 
             cutbutton.Location = cutbuttonLocation;
             cutbutton.Size = cutbuttonSize;
-            cutbutton.Text = "cut";
+            cutbutton.Text = "Cut";
             cutbutton.TabIndex = 3;
             this.Controls.Add(cutbutton);
 
@@ -582,7 +667,7 @@ namespace VideoStudio
 
             settingbutton.Location = settingbuttonLocation;
             settingbutton.Size = settingbuttonSize;
-            settingbutton.Text = "Настройка";
+            settingbutton.Text = "Setup";
             settingbutton.TabIndex = 2;
             this.Controls.Add(settingbutton);
 
@@ -591,14 +676,15 @@ namespace VideoStudio
 
         private bool Sets_sizes(int DisplayWidth)// установка параметров размеров элементов (ширина экрана)
         {
-            if (DisplayWidth == 1366)
+            //DisplayWidth = 1920;
+            if (DisplayWidth < 1900)
             {
                 // переменные размеров
-
+              
                 //form
                 FormWidth = 1366;// ширина формы
                 FormHeight = 730;// высота окна формы
-
+                this.MinimumSize = new Size(1350, 725);
                 //BigpictureBox
                 BigpictureBoxLocation = new System.Drawing.Point(125, 5);// верхний левый угол главного окна вывода изображения
                 BigpictureBoxSize = new System.Drawing.Size(767, 420);//размер главного окна вывода изображения
@@ -625,11 +711,11 @@ namespace VideoStudio
 
 
                 //smallpanel 5
-                smallpanelsLocation[4] = new System.Drawing.Point(1005, 2); ;
+                smallpanelsLocation[4] = new System.Drawing.Point(1005, 230); 
                 smallpanelsSize[4] = new System.Drawing.Size(324, 225);
 
                 //smallpanel 6
-                smallpanelsLocation[5] = new System.Drawing.Point(1005, 230);
+                smallpanelsLocation[5] = new System.Drawing.Point(1005, 2);
                 smallpanelsSize[5] = new System.Drawing.Size(324, 225);
 
                 //smallbutton 1
@@ -662,17 +748,86 @@ namespace VideoStudio
 
                 //setting button 
                 settingbuttonLocation = new System.Drawing.Point(15, 153);
-                settingbuttonSize = new System.Drawing.Size(107, 47); ;
+                settingbuttonSize = new System.Drawing.Size(107, 47);
 
                 return true;
             }
             else
             {
-                if (DisplayWidth == 1920)
-                {
-                    MessageBox.Show("не поддерживается");
-                }
-                return false;
+              
+                //form
+                FormWidth = 1920;// ширина формы
+                FormHeight = 1080;// высота окна формы
+                this.MinimumSize = new Size(1900, 1070);
+
+                //BigpictureBox
+                BigpictureBoxLocation = new System.Drawing.Point(175, 7);// верхний левый угол главного окна вывода изображения
+                BigpictureBoxSize = new System.Drawing.Size(1078, 617);//размер главного окна вывода изображения
+
+                //panel
+                panelLocation = new System.Drawing.Point(17, 672);// верхний левый угол первой панели для маленьких окон 
+                panelSize = new System.Drawing.Size(1856, 339);//размер первой панели для маленьких окон
+
+                //smallpanel 1
+                smallpanelsLocation[0] = new System.Drawing.Point(4, 4);
+                smallpanelsSize[0] = new System.Drawing.Size(453, 320);
+
+                //smallpanel 2
+                smallpanelsLocation[1] = new System.Drawing.Point(466, 4);
+                smallpanelsSize[1] = new System.Drawing.Size(453, 320);
+
+                //smallpanel 3
+                smallpanelsLocation[2] = new System.Drawing.Point(928, 4);
+                smallpanelsSize[2] = new System.Drawing.Size(453, 320);
+
+                //smallpanel 4
+                smallpanelsLocation[3] = new System.Drawing.Point(1390, 4);
+                smallpanelsSize[3] = new System.Drawing.Size(453, 320);
+
+
+                //smallpanel 5
+                smallpanelsLocation[4] = new System.Drawing.Point(1407,328); ;
+                smallpanelsSize[4] = new System.Drawing.Size(453, 320);
+
+                //smallpanel 6
+                smallpanelsLocation[5] = new System.Drawing.Point(1407, 3);
+                smallpanelsSize[5] = new System.Drawing.Size(453, 320);
+
+                //smallbutton 1
+                smallbuttonLocation[0] = new System.Drawing.Point(40, 260);
+                smallbuttonSize[0] = new System.Drawing.Size(98, 60);
+
+                //smallbutton 2
+                smallbuttonLocation[1] = new System.Drawing.Point(141, 260);
+                smallbuttonSize[1] = new System.Drawing.Size(98, 60);
+
+                //smallbutton 3
+                smallbuttonLocation[2] = new System.Drawing.Point(243, 260);
+                smallbuttonSize[2] = new System.Drawing.Size(98, 60);
+
+                //smallbutton 4
+                smallbuttonLocation[3] = new System.Drawing.Point(343, 260);
+                smallbuttonSize[3] = new System.Drawing.Size(98, 60);
+
+                //smallpictureBox
+                smallpictureBoxLocation = new System.Drawing.Point(10, 2);
+                smallpictureBoxSize = new System.Drawing.Size(430, 255);
+
+                //rec/stop button                  
+                recbuttonLocation = new System.Drawing.Point(12, 5);
+                recbuttonSize = new System.Drawing.Size(107, 124);
+
+                //cut button 
+                cutbuttonLocation = new System.Drawing.Point(12, 229);
+                cutbuttonSize = new System.Drawing.Size(107, 100);
+
+                //setting button 
+                settingbuttonLocation = new System.Drawing.Point(15, 153);
+                settingbuttonSize = new System.Drawing.Size(107, 47); ;
+
+
+               
+                return true;
             }
 
         }
@@ -688,7 +843,7 @@ namespace VideoStudio
             if (Record_is_work == false)
             {
                 Record_is_work = false;
-                string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
+                string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-'))); //генерация нового пути
                 System.IO.Directory.CreateDirectory(new_way);
                 for (int i = 0; i < preview.Length; i++)
                 {
@@ -723,6 +878,7 @@ namespace VideoStudio
         }
 
         #endregion
+       
 
     }
 }

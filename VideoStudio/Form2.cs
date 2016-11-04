@@ -39,16 +39,16 @@ namespace VideoStudio
             datacopping = true;
             try
             {
-                if (checkBox1_Checked == true)// обработка видео входа
+                if (checkBox1_Checked == true)// обработка видеовхода
                 {
                     checkBox1.Checked = true;
                     comboBox1.Items.Clear();
-                    comboBox1.Items.Add("Видео камера");
-                    comboBox1.Items.Add("Захват монитора пк");
-                    comboBox1.Items.Add("Видео файл");
+                    comboBox1.Items.Add("Видеокамера");
+                    comboBox1.Items.Add("Захват монитора ПK");
+                    comboBox1.Items.Add("Видеофайл");
                     comboBox1.Items.Add("JPEGStream");
                     comboBox1.Items.Add("MJPEGStream");
-                    comboBox1.Items.Add("Другой пк");
+                    //comboBox1.Items.Add("Другой ПК");
                     comboBox1.Visible = true;
                     comboBox2.Visible = true;
 
@@ -69,6 +69,7 @@ namespace VideoStudio
                         comboBox1.SelectedIndex = 0;
                     }
                     comboBox2.Text = text_of_combobox2;
+                    
                 }
                 else
                 {
@@ -107,7 +108,7 @@ namespace VideoStudio
             }
             catch
             {
-                MessageBox.Show("Ошибка: 706 (ошибка возврата данных)");
+                MessageBox.Show("Ошибка: 706 (ошибка восстановления данных)");
             }
             checkBox3.Checked = checkbox3;
             datacopping = false;
@@ -121,15 +122,15 @@ namespace VideoStudio
         {
             if (datacopping == false)//
             {
-                if (checkBox1.Checked == true)
+                if (checkBox1.Checked == true)// видео часть
                 {
                     comboBox1.Items.Clear();
-                    comboBox1.Items.Add("Видео камера");
-                    comboBox1.Items.Add("Захват монитора пк");
-                    comboBox1.Items.Add("Видео файл");
+                    comboBox1.Items.Add("Видеокамера");
+                    comboBox1.Items.Add("Захват монитора ПK");
+                    comboBox1.Items.Add("Видеофайл");
                     comboBox1.Items.Add("JPEGStream");
                     comboBox1.Items.Add("MJPEGStream");
-                    comboBox1.Items.Add("Другой пк");
+                  //  comboBox1.Items.Add("Другой ПК");
 
                     comboBox1.Visible = true;
                     checkBox3.Checked = true;
@@ -179,9 +180,12 @@ namespace VideoStudio
 
                     if (comboBox1.SelectedIndex == 1)// выбрали монитор
                     {
-                        comboBox2.Enabled = false;
+                        comboBox2.Enabled = true;
                         comboBox2.Items.Clear();
-                        comboBox2.Items.Add(Screen.AllScreens[0].DeviceName);
+                       for (int i=0; i< Screen.AllScreens.Length; i++)
+                        comboBox2.Items.Add(Screen.AllScreens[i].DeviceName);
+
+                      
                         comboBox2.SelectedIndex = 0;                      
                         comboBox2.Visible = true;
                     }
@@ -201,7 +205,7 @@ namespace VideoStudio
 
                         }
                     }
-                    if (comboBox1.SelectedIndex == 3)// url дописать
+                    if (comboBox1.SelectedIndex == 3)// url 
                     {
                         comboBox2.Enabled = true;
                         comboBox2.Items.Clear();
@@ -267,7 +271,7 @@ namespace VideoStudio
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)// проверка на ошибки перед измением параметров родитедительского объекта
+        private void button1_Click(object sender, EventArgs e)// проверка на ошибки перед передачей параметров родитедительскому объекту
         {
             try
             {
@@ -345,7 +349,7 @@ namespace VideoStudio
 
         #region Свойства передачи выбранных потоков
 
-        public NAudio.Wave.WaveIn Audio// свойство для передачи аудио потока
+        public NAudio.Wave.WaveIn Audio// свойство для передачи аудиопотока
         {            
             get
             {
@@ -363,46 +367,53 @@ namespace VideoStudio
             }
         }
 
-        public IVideoSource Video// свойство для передачи видио потока
+        public IVideoSource Video// свойство для передачи видиопотока
         {
             get
             {
-                if (checkBox1.Checked == true)
+                try
                 {
-                    if (comboBox1.SelectedIndex == 0)// поток с камеры
+                    if (checkBox1.Checked == true)
                     {
-                        videosource = smallform_of_camera.VideoDevice;
-                    }
+                        if (comboBox1.SelectedIndex == 0)// поток с камеры
+                        {
+                            videosource = smallform_of_camera.VideoDevice;
+                        }
 
-                    if (comboBox1.SelectedIndex == 1)// поток с монитора
-                    {
+                        if (comboBox1.SelectedIndex == 1)// поток с монитора
+                        {
 
-                        videosource = new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 10);
-                    }
+                            videosource = new ScreenCaptureStream(Screen.AllScreens[comboBox2.SelectedIndex].Bounds, 10);
+                        }
 
-                    if (comboBox1.SelectedIndex == 2)// поток из файла
-                    {
-                        videosource = new FileVideoSource(comboBox2.Text);
-                    }                    
-                    if (comboBox1.SelectedIndex == 3)// поток по url ссылке
-                    {
+                        if (comboBox1.SelectedIndex == 2)// поток из файла
+                        {
+                            videosource = new FileVideoSource(comboBox2.Text);
+                        }
+                        if (comboBox1.SelectedIndex == 3)// поток по url ссылке
+                        {
 
-                        videosource = new JPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
-                    }
-                    if (comboBox1.SelectedIndex == 4)// поток по url ссылке
-                    {
+                            videosource = new JPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
+                        }
+                        if (comboBox1.SelectedIndex == 4)// поток по url ссылке
+                        {
 
-                        videosource = new MJPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
+                            videosource = new MJPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
+                        }
+                        if (comboBox1.SelectedIndex == 5)// если мы выбрали дрогой компьютер с нашей программой,
+                        // обычный видео поток нам не подходит
+                        {
+                            videosource = null;
+                        }
+
+                        return videosource;
                     }
-                    if (comboBox1.SelectedIndex == 5)// если мы выбрали дрогой компьютер с нашей программой,
-                    // обычный видео поток нам не подходит
+                    else
                     {
-                       videosource=null;
+                        return null;
                     }
-                   
-                    return videosource;
                 }
-                else
+                catch 
                 {
                     return null;
                 }
