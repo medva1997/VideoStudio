@@ -1,0 +1,9 @@
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+c:\users\aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
