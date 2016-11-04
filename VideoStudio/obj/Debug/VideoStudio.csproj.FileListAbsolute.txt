@@ -51,54 +51,149 @@ C:\Users\Aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\b
 C:\Users\Aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\bin\Debug\NAudio.WindowsMediaFormat.dll
 C:\Users\Aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
 C:\Users\Aleksey\documents\visual studio 2013\Projects\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.DebuggerVisualizers (2010).dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Fuzzy.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Genetic.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.Formats.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.IPPrototyper.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.MachineLearning.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Neuro.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Lego.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Surveyor.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.TeRK.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Kinect.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.VFW.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Ximea.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Vision.dll
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\IPPrototyper.exe
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Fuzzy.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Genetic.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.Formats.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.MachineLearning.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Neuro.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Lego.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Surveyor.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.TeRK.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Kinect.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.VFW.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Ximea.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Vision.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
-X:\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.DebuggerVisualizers (2010).dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Fuzzy.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Genetic.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.Formats.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.IPPrototyper.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.MachineLearning.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Neuro.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Lego.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Surveyor.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.TeRK.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Kinect.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.VFW.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Ximea.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Vision.dll
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\IPPrototyper.exe
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.pdb
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Fuzzy.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Genetic.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.Formats.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.MachineLearning.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Neuro.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Lego.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.Surveyor.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Robotics.TeRK.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.pdb
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Kinect.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.VFW.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.Ximea.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\AForge.Vision.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+C:\Users\Aleksey\Desktop\диплом\диплом 2 buck-up\15.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.IPPrototyper.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Math.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\IPPrototyper.exe
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Math.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\NAudio.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\NAudio.WindowsMediaFormat.dll
+C:\Users\Алексей\Desktop\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
+X:\диплом 2 buck-up\19.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+X:\диплом 2 buck-up\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+X:\диплом 2 buck-up\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\IPPrototyper.exe
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\NAudio.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\NAudio.WindowsMediaFormat.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.IPPrototyper.dll
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\bin\Debug\AForge.Math.xml
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+C:\Users\Алексей\Desktop\19.06\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.exe
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\VideoStudio.exe
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\VideoStudio.pdb
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\IPPrototyper.exe
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\NAudio.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\NAudio.WindowsMediaFormat.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Math.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.IPPrototyper.dll
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Controls.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\NAudio.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Imaging.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\bin\Debug\AForge.Math.xml
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form1.resources
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Form2.resources
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+C:\Users\Алексей\SkyDrive\ДИПЛОМ\Версии по датам\сентябрь\19.06.2014\VideoStudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache

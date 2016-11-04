@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 using AForge.Video;
 using AForge;
@@ -26,7 +27,7 @@ namespace VideoStudio
         private int lastselected_device = 0;                                                 // выбранный до этого девайс
         private int counter = 0;
        // private tcpserver server;
-        Timer time;
+        System.Windows.Forms.Timer time;
         bool flag_to_out=false;
 
 
@@ -70,88 +71,190 @@ namespace VideoStudio
         private System.Drawing.Size settingbuttonSize;                                                  //размер кнопки настройки
 
 
+
         #endregion
 
 
-        private FilterInfoCollection VideoCaptureDevices;
-        private VideoCaptureDevice finalVideo;
+     
         private tcpserver2 server;
+        private bool Record_is_work = false;
+        private string way_to_folder="";
+        Form3 settings;
+        int videocouner;
+        int audiocounter;
+        byte[] buffer;
+        private System.Threading.Timer timer2 = null;
+
+        private Videomix videomixer; 
 
         public Form1()
         {
             InitializeComponent();
-            KeyPreview = true; //перелючаем  обрабодчик клавиатуры на форму     
-
-            VideoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo VideoCaptureDevice in VideoCaptureDevices)
-            {
-                finalVideo = new VideoCaptureDevice(VideoCaptureDevice.MonikerString);
-            }
-           
-            
+            KeyPreview = true; //перелючаем клавиатуру на форму   
         }
 
-        void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
-        {
-            
-            BigpictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
-            //server.sender((Bitmap)BigpictureBox.Image);         
-            GC.Collect();
-        }
-
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
             selected_device = 0;
-           if( Sets_sizes(1366)==true)// установка параметров размеров элементов и возврат состояния корректности инициализации(true-все хорошо)
-           {
-               createconponents();// создаем визуальные элементы
+            if (Sets_sizes(1366) == true)// установка параметров размеров элементов и возврат состояния корректности инициализации(true-все хорошо)
+            {
+                createconponents();// создаем визуальные элементы
 
-               for(int i=0; i<number_of_small_panels;i++)// создаем объекты маленьких окон
-               {
-                   preview[i] = new smallwindow(smallpanels[i], smallbuttonLocation, smallbuttonSize, smallpictureBoxLocation, smallpictureBoxSize, i);
-               }
-           }
+                for (int i = 0; i < number_of_small_panels; i++)// создаем объекты маленьких окон
+                {
+                      preview[i] = new smallwindow(smallpanels[i], smallbuttonLocation, smallbuttonSize, smallpictureBoxLocation, smallpictureBoxSize, i);
+                }
+            }
             // подключаемся к обрабочикам событий
-           this.KeyDown += new System.Windows.Forms.KeyEventHandler(Form1_KeyDown);
-           this.FormClosing += Form1_FormClosing;
-           preview[0].button1.Click += new System.EventHandler(preview0button1_Click);
-           preview[1].button1.Click += new System.EventHandler(preview1button1_Click);
-           preview[2].button1.Click += new System.EventHandler(preview2button1_Click);
-           preview[3].button1.Click += new System.EventHandler(preview3button1_Click);
-           preview[4].button1.Click += new System.EventHandler(preview4button1_Click);
-           preview[5].button1.Click += new System.EventHandler(preview5button1_Click);
-           preview[0].pictureBox.DoubleClick += new System.EventHandler(preview0pictureBox_DoubleClick);
-           preview[1].pictureBox.DoubleClick += new System.EventHandler(preview1pictureBox_DoubleClick);
-           preview[2].pictureBox.DoubleClick += new System.EventHandler(preview2pictureBox_DoubleClick);
-           preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
-           preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
-           preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(Form1_KeyDown);
+            this.FormClosing += Form1_FormClosing;
+            preview[0].button1.Click += new System.EventHandler(preview0button1_Click);
+            preview[1].button1.Click += new System.EventHandler(preview1button1_Click);
+            preview[2].button1.Click += new System.EventHandler(preview2button1_Click);
+            preview[3].button1.Click += new System.EventHandler(preview3button1_Click);
+            preview[4].button1.Click += new System.EventHandler(preview4button1_Click);
+            preview[5].button1.Click += new System.EventHandler(preview5button1_Click);
+            preview[0].pictureBox.DoubleClick += new System.EventHandler(preview0pictureBox_DoubleClick);
+            preview[1].pictureBox.DoubleClick += new System.EventHandler(preview1pictureBox_DoubleClick);
+            preview[2].pictureBox.DoubleClick += new System.EventHandler(preview2pictureBox_DoubleClick);
+            preview[3].pictureBox.DoubleClick += new System.EventHandler(preview3pictureBox_DoubleClick);
+            preview[4].pictureBox.DoubleClick += new System.EventHandler(preview4pictureBox_DoubleClick);
+            preview[5].pictureBox.DoubleClick += new System.EventHandler(preview5pictureBox_DoubleClick);
 
-           settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
+            settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
 
-           settingbutton.Click += new System.EventHandler(settingbutton_Click); ;
-           //settingbutton.DoubleClick += new System.EventHandler(settingbutton_Click);
-           //cutbutton.DoubleClick += new System.EventHandler(settingbutton_Click); 
-            time = new Timer();
-           time.Interval =31;
-           time.Enabled = true;
-           time.Tick += time_Tick;
-           time.Start();
+            settingbutton.Click += new System.EventHandler(settingbutton_Click); ;
+            recbutton.Click += new System.EventHandler(recbutton_Click);
+            cutbutton.Click += new System.EventHandler(cutbutton_Click); 
+            //time = new System.Windows.Forms.Timer();
+            //time.Interval = 31;
+            //time.Enabled = true;
+            //time.Tick += time_Tick;
+            //time.Start();
 
-;
+            timer2 = new System.Threading.Timer(Tick, sender,0,31);  // если надо, то в скобках указываем приоритет, например DispatcherPriority.Render
+          
+            
+            
+
+
+        }
+
+
+        private void Tick(object sender)
+        {
+            for (int i = 0; i < number_of_small_panels; i++)
+            {
+                preview[i].update_information();
+
+            }
+            outpute_writer();
+
+            //System.Threading.Thread th = new System.Threading.Thread(outpute_writer);
+            //th.Start();
+            try
+            {
+                BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
+            }
+            catch
+            {
+
+            }
+            if (flag_to_out == true)
+            {
+                server.sender(preview[selected_device].Video_sourse_cach);
+                //if (audiocounter % 3 == 0)
+                //{
+                //    buffer = preview[0].Audiobuffer;
+                //    server.Audiobuffer = buffer;
+                //    server.Recorded();
+                //}
+            }           
+          
         }
 
         private void time_Tick(object sender, EventArgs e)
         {
-            BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
+            for (int i = 0; i < number_of_small_panels;i++ )
+            {
+                preview[i].update_information();               
+                
+            }
+            outpute_writer();
 
+            //System.Threading.Thread th = new System.Threading.Thread(outpute_writer);
+            //th.Start();
+
+            BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
 
             if (flag_to_out == true)
             {
-                server.sender(preview[selected_device].Video_sourse_cach);         
-            }
+                server.sender(preview[selected_device].Video_sourse_cach);
+                //if (audiocounter % 3 == 0)
+                //{
+                //    buffer = preview[0].Audiobuffer;
+                //    server.Audiobuffer = buffer;
+                //    server.Recorded();
+                //}
+            }           
           
+        }
+
+        private void outpute_writer()
+        {
+            if (Record_is_work == true)
+            {
+                if (((videocouner != 15 && videocouner != 29) && videocouner != 8))
+                {
+                    for (int i = 0; i < number_of_small_panels; i++)
+                    {
+
+
+                        preview[i].videowriter();
+
+
+                    }
+                    videocouner++;
+
+                    videomixer.changepicture(preview[selected_device].Video_sourse_cach);
+                    videomixer.videowriter();
+                }
+                else
+                {
+                    videocouner++;
+                }
+                if (videocouner > 30)
+                {
+                    videocouner = 0;
+                }
+
+
+                if (audiocounter % 3 == 0)
+                {
+                    for (int i = 0; i < number_of_small_panels; i++)
+                    {
+
+                        if (Record_is_work == true)
+                        {
+                            preview[i].audiowriter();
+                        }
+                    }
+                    audiocounter++;
+                }
+                else
+                {
+                    audiocounter++;
+                }
+
+                if (audiocounter > 30)
+                {
+                    videocouner = 0;
+                }
+
+            }
+
         }
 
         private void Image_changer(int newselected_device, int lastselected_device1)
@@ -453,23 +556,96 @@ namespace VideoStudio
             for (int i = 0; i < preview.Length; i++)
             {
                 preview[i].CloseCurrentVideoSource();
+                preview[i].stoprec();
             }
             time.Stop();
 
         }
 
+          #endregion
 
 
         private void settingbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
-            server = new tcpserver2("192.168.1.4");
-            //finalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-            //finalVideo.Start();
-            flag_to_out = true;
+            settings = new Form3();
+             settings.Show();
+             settings.FormClosing += settings_FormClosing;
+              server = new tcpserver2("192.168.1.4");
+            
+            
+            
         }
 
+        void settings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+           
+           // Record_is_work =settings.do_record;
+            way_to_folder = settings.folder_for_records;
+            //flag_to_out = true;
+                   
+        }
 
-        #endregion
+        private void recbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        {
+            if (Record_is_work == true)
+            {
+                Record_is_work = false;
+                recbutton.Text = "Запись не производится";
+                for (int i = 0; i < preview.Length; i++)
+                {
+
+                    preview[i].stoprec();
+                }
+                recbutton.BackColor =Color.Green;
+               
+            }
+            else
+            {
+                if (videomixer != null)
+                {
+                    videomixer.stoprec();
+                    videomixer = null;
+                    GC.Collect();
+                }
+                videomixer = new Videomix(1280, 720);
+
+                string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
+                System.IO.Directory.CreateDirectory(new_way);
+                for (int i = 0; i < preview.Length; i++)
+                {
+                    preview[i].Cutter(new_way);
+                }
+                videomixer.Cutter(new_way);
+
+                recbutton.Text = "Идет запись";
+                recbutton.BackColor = Color.Red;
+                Record_is_work = true;
+
+            }
+           
+        }
+
+        private void cutbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        {
+            Record_is_work = false;
+                  
+           
+            videomixer = new Videomix(1280, 720);
+            string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
+            for (int i = 0; i < preview.Length; i++)
+            {
+                System.IO.Directory.CreateDirectory(new_way);
+                preview[i].Cutter(new_way);
+            }
+            videomixer.Cutter(new_way);
+            Record_is_work = true;
+
+        }
+
+        
+
+
+       
 
 
     }

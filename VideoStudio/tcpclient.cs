@@ -114,8 +114,7 @@ namespace VideoStudio
         public void Closing()                                                // завершаем потоки если необходимо 
         {
             it = 1;
-            st = 1;
-            Thread.Sleep(31);
+            st = 1;           
             output.Close();           
             //waveout.Dispose();
             wavein.StopRecording();
