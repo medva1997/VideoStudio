@@ -1,0 +1,58 @@
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\MainFrame.resx
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\MainFrame.cs
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\MainFrame.Designer.cs
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\VideoStudio.exe.manifest
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\VideoStudio.application
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\VideoStudio.exe
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\VideoStudio.pdb
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\System.Threading.dll
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\AForge.xml
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\AForge.Video.xml
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\System.Threading.xml
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.MainFrame.resources
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.InputSetup.resources
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.Settings.resources
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.exe.manifest
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.application
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.exe
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.pdb
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\LumiSoft.Net.dll
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\LumiSoft.Net.pdb
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\bin\Debug\Interop.SpeechLib.dll
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\Interop.SpeechLib.dll
+C:\Users\Aleksey\Source\Repos\videostudio\VideoStudio\obj\Debug\VideoStudio.csproj.ResolveComReference.cache
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\VideoStudio.exe.config
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\Interop.SpeechLib.dll
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.csproj.ResolveComReference.cache
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.exe
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.pdb
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\MainFrame.resx
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\MainFrame.cs
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\MainFrame.Designer.cs
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\VideoStudio.exe.manifest
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\VideoStudio.application
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\VideoStudio.exe
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\VideoStudio.pdb
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\LumiSoft.Net.dll
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\System.Threading.dll
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\AForge.xml
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\AForge.Video.xml
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\AForge.Video.DirectShow.xml
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\AForge.Video.FFMPEG.xml
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\LumiSoft.Net.pdb
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\System.Threading.xml
+F:\junior\videostudio for junior\videostudio\VideoStudio\bin\Debug\Interop.SpeechLib.dll
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.csprojResolveAssemblyReference.cache
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.MainFrame.resources
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.InputSetup.resources
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.Settings.resources
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.Properties.Resources.resources
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.csproj.GenerateResource.Cache
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.exe.manifest
+F:\junior\videostudio for junior\videostudio\VideoStudio\obj\Debug\VideoStudio.application

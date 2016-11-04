@@ -1,0 +1,3 @@
+http://www.codeproject.com/Articles/482735/TCP-Audio-Streamer-and-Player-VoIP
+https://stackoverflow.com/questions/991766/send-sound-or-stream-sound-over-lan
+http://www.codeproject.com/Articles/19485/A-Voice-Chat-Application-in-C

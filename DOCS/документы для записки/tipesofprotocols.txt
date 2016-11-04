@@ -1,0 +1,20 @@
+Supported file protocols:
+Output:
+file
+ftp
+gopher
+http
+httpproxy
+https
+md5
+pipe
+rtp
+srtp
+tcp
+tls
+udp
+rtmp
+rtmpe
+rtmps
+rtmpt
+rtmpte

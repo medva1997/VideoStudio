@@ -1,0 +1,66 @@
+body {
+	/* padding-top: 31px; */
+	padding: 0; margin: 0;
+}
+
+#auditory {
+	display: block;
+/*	position: relative; top: 0; left: 0; right: 0;*/
+	height: 31px; width: 100%;
+	margin: 0; padding: 0;
+	list-style: none;
+	background: url('/auditory_menu/menu_bg.jpg');
+	font-family: Arial;
+	font-size: 12px;
+	line-height: 120%;
+}
+#auditory li { float: left; padding: 5px 35px 0 0px; text-align: left;}
+#auditory a { text-decoration: none; color: #005082; border: none; }
+#auditory a:hover { text-decoration: underline; background: #7fbddd; }
+#auditory img { padding-left: 10px; border: none; }
+#miem_logo {
+	display: block;
+	width: 77px;
+	position: relative;
+	left: 10px; 
+	padding-left: 0;
+	margin-left: 0;
+}
+
+#auditory_more {
+	position: absolute; z-index: 42;
+	width: 180px;
+	margin: 0; padding: 0;
+	list-style: none;
+	background: #7fbddd;
+	border-top: 1px solid #7fbddd;
+	border-bottom: 1px solid #7fbddd;
+}
+#auditory_more li { float: none; padding: 2px 0 2px 5px; }
+
+#auditory_alert {
+	padding: 0;
+	margin-bottom: 10px;
+	text-align: center;
+	border: 1px solid #B8D0E3;
+	background: #F5F6F8;
+}
+
+#auditory_alert p {
+	padding: 7px 0 !important;
+	margin: 0 !important;
+	background: none;
+        font-family: Arial !important;
+	font-size: 14px !important;
+	color: #1E4A5E !important;
+}
+
+#auditory_alert a:link, #auditory_alert a:active, #auditory_alert a:visited {
+	text-decoration: underline !important;
+	color: blue !important;
+	font-size: 14px !important;
+}
+
+@media print {
+	#auditoryContainer { display: none !important; }
+}
