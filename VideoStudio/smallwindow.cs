@@ -10,7 +10,7 @@ using AForge;
 using AForge.Video;
 using AForge.Video.FFMPEG;
 using AForge.Video.DirectShow;
-
+using System.Threading;
 using NAudio.Wave;
 using NAudio.CoreAudioApi;
 
@@ -44,7 +44,7 @@ namespace VideoStudio
         private string text_of_combobox2;                                                           // выбранное видео устройство
         private string textbox;                                                                     // частота дискретизации
         private bool form_had_been_opened;                                                          // флаг на использование ранее сохраненных данных true- испльзовать
-
+        private bool checkbox3;
 
 
         private IVideoSource videosource;                                                           // видео поток       
@@ -55,83 +55,22 @@ namespace VideoStudio
         private NAudio.Wave.WaveFileWriter waveWriter = null;                                       // объект записи в файл
         private byte[] Audiosourcebuffer;                                                           // буфер аудио
         private int AudiosourceBytesRecorded;                                                       // количество полученного звука
-        private int Audiosourceoffset;      
+        private int Audiosourceoffset;                                                              //
         private string AudioOutputfile;                                                             // переменна для храенения пути к файлу записи аудио
         private string VideoOutputfile;                                                             //переменна для храенения пути к файлу записи видео
-        private Bitmap Videosoursecach=null;                                                        // переменна для хранения текущего кадра
- 
+        private Bitmap Videosoursecach=null;                                                        // переменна для хранения текущего кадра 
+        private tcpclient client= new tcpclient();                                                  // подкючение к другому пк
+        private VideoFileWriter Videowriter1;                                                       // запись видео в файл
+
+       
+        
         #endregion
 
-        private tcpclient client = new tcpclient();
-        private VideoFileWriter Videowriter1;
+        public Semaphore semofvideo=new Semaphore(0,1);// семафор получения доступа к bitmap
+        
+        
 
-        public void audiowriter()
-        {
-            if (waveWriter != null)
-            {
-                waveWriter.Write(Audiosourcebuffer, Audiosourceoffset, AudiosourceBytesRecorded);
-                waveWriter.Flush();
-            }
-        }
-
-        public void videowriter()
-        {
-            if (Videowriter1 != null)
-            {
-                Videowriter1.WriteVideoFrame(Videosoursecach);
-            }
-
-        } 
-
-        public void Cutter(string new_folder)// Рeрезалка записи
-        {
-           stoprec();
-           startrec(new_folder);
-                
-        }
-
-        public void startrec(string new_folder)//запуск записи
-        {
-            try
-            {
-                VideoOutputfile = System.IO.Path.Combine(new_folder, "camera" + id + ".avi");
-                AudioOutputfile = System.IO.Path.Combine(new_folder, "audio" + id + ".wav");
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка создания файла для сохранения потока");
-            }
-            if (checkBox2_Checked == true)
-                waveWriter = new NAudio.Wave.WaveFileWriter(AudioOutputfile, AudiosourceStream.WaveFormat);
-
-            try
-            {
-                if (checkBox1_Checked == true)
-                {
-                    Videowriter1 = new VideoFileWriter();
-                    Videowriter1.Open(VideoOutputfile, Videosoursecach.Width, Videosoursecach.Height, 30, VideoCodec.MPEG2, 45000000);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка инициаллизации видео файла");
-            }
-        }
-
-        public void stoprec() //остановка записи
-        {
-            try
-            {
-                waveWriter.Close();
-                waveWriter = null;
-                Videowriter1.Close();
-                
-            }
-            catch
-            {
-              //  MessageBox.Show("Ошибка остановки потоков записи " + id);
-            }
-        }
+       
 
         
         public void CloseCurrentVideoSource() //завершаем все потоки, если он не остановлены
@@ -217,14 +156,8 @@ namespace VideoStudio
             catch
              {
 
-             }
-             
-           
-
+             }    
          }
-
-
-
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -236,27 +169,28 @@ namespace VideoStudio
             MessageBox.Show("3");
         }
 
-        private void OpenAudioSource()// запуск работы с аудио
+        #region запуск захвата аудио и видео
+
+        private void OpenAudioSource()// запуск захвата аудио
         {
             AudiosourceStream.StartRecording();// получение потока
-            try
-            {
-                //NAudio.Wave.WaveInProvider waveIn = new NAudio.Wave.WaveInProvider(AudiosourceStream);
-                //waveOut = new NAudio.Wave.DirectSoundOut();
-                //waveOut.Init(waveIn);
-                //waveOut.Play();// вывод аудио потока на динамики
-            }
-            catch
-            {
-                MessageBox.Show("ошибка: 700");
-            }
-
+          
             AudiosourceStream.DataAvailable += new EventHandler<NAudio.Wave.WaveInEventArgs>(sourceStream_DataAvailable);            
         }
+
+        private void OpenVideoSource()// запуск захвата видео
+        {
+            CloseCurrentVideoSource(); // останавливаем все предыдущие действия
+            videosource.NewFrame += new NewFrameEventHandler(player_NewFrame); // подписываемся на событие прихода нового видео кадра
+            videosource.Start();
+
+        }
+        #endregion
 
 
         public smallwindow(Panel outpanel, System.Drawing.Point[] smallbuttonLocation, System.Drawing.Size[] smallbuttonSize, System.Drawing.Point smallpictureBoxLocation, System.Drawing.Size smallpictureBoxSize, int id)
         {
+          semofvideo.Release(1);
             // передача параметров конструктора в поля
             this.outpanel = outpanel;
             this.smallbuttonLocation = smallbuttonLocation;
@@ -281,8 +215,7 @@ namespace VideoStudio
 
         }
 
-        
-
+       
          public smallwindow()
         {
 
@@ -302,22 +235,140 @@ namespace VideoStudio
             }
         }
 
-        private void OpenVideoSource()// запуск захвата видео
+        private void forms_of_selection_FormClosing(object sender, FormClosingEventArgs e) // обработка закрытия формы настройки
         {
-            CloseCurrentVideoSource(); // останавливаем все предыдущие действия
-            videosource.NewFrame += new NewFrameEventHandler(player_NewFrame); // подписываемся на событие прихода нового видио кадра
-            videosource.Start();
+            if (forms_of_selection.all_right == true)           //(all_right==true если пользователь нажал Ok и все параметры действительны) 
+            {
+                copy_data_from_form2(); // сохранение информации из form2
+                
+                forms_of_selection.Dispose();//уничтожение form2
 
+                if (index_of_combobox1 != 5)// если не выбран показ с друго пк
+                {
+                    bool flag = checkbox3;
+                    checkbox3 = false;          //блокировка записи
+                    stoprec();                  // остановка записи
+                    change_video();             // смена видео источника
+                    change_audio();             // смена аудио источника
+                    if (flag == true)
+                    {
+                        MessageBox.Show("Так как вы сменили источник, то запись с этого источника продолжится только после команды CUT или REC");
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        if (videosource.IsRunning == true) //останавливаем видио поток
+                        {
+                            videosource.SignalToStop();
+                            videosource.WaitForStop();
+                            videosource.Stop();
+                        }
+                        try
+                        {
+                            AudiosourceStream.StopRecording();
+                            AudiosourceStream.Dispose();
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка остановки захвата с источников");
+                    }
+
+                    //////// запуск  получения  картинки с друго компа
+
+                }
+                forms_of_selection.all_right = false;             // меняем значение на false, чтобы при дальнейшем закрытии формы, мы не вернулись сюда
+                forms_of_selection.Close();                     // закрываем форм2
+            }
         }
+
+       private void copy_data_from_form2()// сохранение информации из form2
+        {
+            cashvideosource = forms_of_selection.Video;         // устанавливаем значение будущего видео потока
+            cashAudiosourceStream = forms_of_selection.Audio; // устанавливаем значение будущего аудио потока
+
+            // сохранение информации для повторной инициализации формы
+            checkBox1_Checked = forms_of_selection.checkBox1_was_Checked;
+            checkBox2_Checked = forms_of_selection.checkBox2_was_Checked;
+            index_of_combobox1 = forms_of_selection.index_combobox1;
+            index_of_combobox3 = forms_of_selection.index_combobox3;
+            text_of_combobox2 = forms_of_selection.text_of_combobox2;
+            textbox = forms_of_selection.text_of_textbox;
+            checkbox3 = forms_of_selection.CheckBox3_cheched;
+            form_had_been_opened = true;// поднимаем флаг, что мы уже открывали форму
+        }
+
+       private void change_video()
+       {
+           try
+           {
+
+               if (checkBox1_Checked == true)            // запуск процедуры захвата видео с нового потока
+               {
+                   if (videosource.IsRunning == true) //останавливаем видио поток
+                   {
+                       videosource.SignalToStop();
+                       videosource.WaitForStop();
+                       videosource.Stop();
+                   }
+                   videosource = cashvideosource;  //меняем девайс
+                   OpenVideoSource();// запускаем                           
+               }
+               else
+               {
+                   if (videosource.IsRunning == true) //останавливаем видио поток
+                   {
+                       videosource.SignalToStop();
+                       videosource.WaitForStop();
+                       videosource.Stop();
+                   }
+               }
+           }
+           catch
+           {
+               MessageBox.Show("Ошибка: 705 (Ошибка смены видео входа)");
+           }
+       }// смена видео входа
+
+       private void change_audio()
+       {
+           try
+           {
+               if (checkBox2_Checked == true)            // запуск процедуры захвата с нового  потока аудио     
+               {
+                   AudiosourceStream.StopRecording();
+                   AudiosourceStream.Dispose();
+                   AudiosourceStream = cashAudiosourceStream;
+                   OpenAudioSource();
+               }
+               else
+               {
+                   AudiosourceStream.StopRecording();
+                   AudiosourceStream.Dispose();
+               }
+           }
+           catch
+           {
+               MessageBox.Show("Ошибка: 704 (Ошибка смены аудио входа)");
+           }
+       }// смена аудио входа
+
 
         private void player_NewFrame(object sender, NewFrameEventArgs eventArgs)// событие связанное с  появление нового изображения в потоке
         {
             try
             {
-                pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();     //вывод в превью  
+                pictureBox.Image = (Bitmap)eventArgs.Frame.Clone(); //вывод в превью  
+                semofvideo.WaitOne();               
                 Videosoursecach = (Bitmap)eventArgs.Frame.Clone();
+                semofvideo.Release(1);
                 GC.Collect(); // сбор мусора, т.к clone засоряет оперативную память
-
             }
             catch
             {
@@ -325,14 +376,17 @@ namespace VideoStudio
             }
         }
 
-        private void sourceStream_DataAvailable(object sender, NAudio.Wave.WaveInEventArgs e)// захват аудио потока для записи в файл и сохраниния в буфера
-        {
-           
+        private void sourceStream_DataAvailable(object sender, NAudio.Wave.WaveInEventArgs e)// захват аудио потока и сохраниния в буфера
+        {           
             AudiosourceBytesRecorded = e.BytesRecorded;
             Audiosourcebuffer = e.Buffer;
             Audiosourceoffset = 0;
         }
-        
+       
+        # region Свойства
+
+        # region свойства аудио
+
         public byte[] Audiobuffer// свойство возвращающее аудио буфер
         {
             get
@@ -357,99 +411,113 @@ namespace VideoStudio
             }
         }
 
+        #endregion
+
         public Bitmap Video_sourse_cach// свойство возвращающее текущий кадр видео
         {
             get
             {
-                return Videosoursecach;
+                return Videosoursecach;                
             }
         }
 
-        void forms_of_selection_FormClosing(object sender, FormClosingEventArgs e) // обработка закрытия формы настройки
+        #endregion
+
+        #region Запись 
+
+        public void audiowriter() // запись звука
         {
-            if (forms_of_selection.all_right == true)           //(all_right==true если пользователь нажал Ok и все параметры действительны) 
+            if (checkbox3 == true)
             {
-                cashvideosource = forms_of_selection.Video;         // устанавливаем значение видео потока
-                cashAudiosourceStream = forms_of_selection.Audio; // устанавливаем значение аудио потока
-
-                // сохранение информации для повторной инициализации формы
-                checkBox1_Checked = forms_of_selection.checkBox1_was_Checked;
-                checkBox2_Checked = forms_of_selection.checkBox2_was_Checked;
-                index_of_combobox1 = forms_of_selection.index_combobox1;
-                index_of_combobox3 = forms_of_selection.index_combobox3;
-                text_of_combobox2 = forms_of_selection.text_of_combobox2;
-                textbox = forms_of_selection.text_of_textbox;
-
-                form_had_been_opened = true;
-                forms_of_selection.Dispose();
-                if (index_of_combobox1 != 5)
+                if (waveWriter != null)
                 {
-                    try
-                    {
-
-                        if (checkBox1_Checked == true)            // запуск процедуры захвата с нового потока
-                        {
-                            if (videosource.IsRunning == true) //останавливаем видио поток
-                            {
-                                videosource.SignalToStop();
-                                videosource.WaitForStop();
-                                videosource.Stop();
-                            }
-                            videosource = cashvideosource;  //меняем девайс
-                            OpenVideoSource();// запускаем
-                            button3.Enabled = true;
-                            button1.Enabled = true;
-                        }
-                        else
-                        {
-                            if (videosource.IsRunning == true) //останавливаем видио поток
-                            {
-                                videosource.SignalToStop();
-                                videosource.WaitForStop();
-                                videosource.Stop();
-                            }
-                            button3.Enabled = false;
-                            button1.Enabled = false;
-                        }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Ошибка: 705");
-                    }
-                    try
-                    {
-
-                        if (checkBox2_Checked == true)            // запуск процедуры захвата с нового  потока аудио     
-                        {
-                            AudiosourceStream.StopRecording();
-                            AudiosourceStream.Dispose();
-                            AudiosourceStream = cashAudiosourceStream;
-                            OpenAudioSource();
-                            button2.Enabled = true;
-                        }
-                        else
-                        {
-                            AudiosourceStream.StopRecording();
-                            AudiosourceStream.Dispose();
-                            button2.Enabled = false;
-                        }
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Ошибка: 704");
-                    }
+                    waveWriter.Write(Audiosourcebuffer, Audiosourceoffset, AudiosourceBytesRecorded);
+                    waveWriter.Flush();
                 }
-                else
-                {
-                    CloseCurrentVideoSource();                    
-                }
-                forms_of_selection.all_right = false;             // меняем значение на false, чтобы при дальнейшем закрытии формы, мы не вернулись сюда
-                forms_of_selection.Close();                     // закрываем форм2
-            }            
+            }
         }
 
+        public void videowriter() // запись видео
+        {
+            if (checkbox3 == true)
+            {
+                if (Videowriter1 != null)
+                {
+                    semofvideo.WaitOne();
+                    Videowriter1.WriteVideoFrame(Videosoursecach);
+                    semofvideo.Release();
 
+                }
+            }
 
+        } 
+
+        public void Cutter(string new_folder)// Рeрезалка записи
+        {
+            stoprec();
+            startrec(new_folder);
+
+        }
+
+        public void startrec(string new_folder)//запуск записи
+        {
+            if (checkbox3 == true)
+            {
+                if (checkBox1_Checked == true)
+                {
+                    VideoOutputfile = System.IO.Path.Combine(new_folder, "camera" + id + ".avi");// генерация имени файла
+
+                    if (Videowriter1 != null)
+                        Videowriter1.Close();
+                    Videowriter1 = new VideoFileWriter();
+
+                    try
+                    {
+
+                        Videowriter1.Open(VideoOutputfile, Videosoursecach.Width, Videosoursecach.Height, 30, VideoCodec.MPEG2, 45000000);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка создания файла для записи видео" + id);
+                    }
+
+                }
+
+                if (checkBox2_Checked == true)
+                {
+                    AudioOutputfile = System.IO.Path.Combine(new_folder, "audio" + id + ".wav"); // генерация имени файла
+                    try
+                    {
+                        if (waveWriter != null)
+                            waveWriter.Close();
+                        waveWriter = null;
+                        waveWriter = new NAudio.Wave.WaveFileWriter(AudioOutputfile, AudiosourceStream.WaveFormat);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Ошибка создания файла для записи аудио" + id);
+                    }
+                }
+            }
+        }
+
+        public void stoprec()//остановка записи 
+        {
+            try
+            {
+                if (waveWriter != null)
+                    waveWriter.Close();
+                waveWriter = null;
+                if (Videowriter1 != null)
+                    Videowriter1.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка остановки  записи потоков " + id);
+            }
+        }
+
+        #endregion
 
         private void button4_Click(object sender, EventArgs e)// нажатие клавиши настроек
         {
@@ -457,7 +525,7 @@ namespace VideoStudio
             {
                 if (form_had_been_opened == true)// если ранне уже настраивали
                 {
-                    forms_of_selection = new Form2(checkBox1_Checked, checkBox2_Checked, index_of_combobox1, index_of_combobox3, text_of_combobox2, textbox);// инициализируем новую форму
+                    forms_of_selection = new Form2(checkBox1_Checked, checkBox2_Checked, index_of_combobox1, index_of_combobox3, text_of_combobox2, textbox, checkbox3);// инициализируем новую форму с старыми параметрами
                     forms_of_selection.FormClosing += forms_of_selection_FormClosing;   // подписываемся на событие ее закрытия
                     forms_of_selection.Show();                                          // открываем форму
 
@@ -468,11 +536,11 @@ namespace VideoStudio
                     forms_of_selection.FormClosing += forms_of_selection_FormClosing;   // подписываемся на событие ее закрытия
                     forms_of_selection.Show();                                          // открываем форму
                 }
-                GC.Collect();
+                GC.Collect();// сборщик мусора
             }
             catch
             {
-                MessageBox.Show("Ошибка 702");
+                MessageBox.Show("Ошибка 702(открытие окна настроек источника)");
             }
         }
 
@@ -521,6 +589,8 @@ namespace VideoStudio
 
          }
 
-        
+
+
+      
     }
 }

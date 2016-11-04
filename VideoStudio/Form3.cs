@@ -21,6 +21,7 @@ namespace VideoStudio
         {
             InitializeComponent();
             textBox2.Enabled = false;
+           
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -103,7 +104,8 @@ namespace VideoStudio
         {
             get
             {
-                return checkBox1.Checked;
+               // return checkBox1.Checked;
+                return true;
             }
         }
 

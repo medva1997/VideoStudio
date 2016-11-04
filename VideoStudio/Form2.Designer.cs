@@ -38,6 +38,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -81,7 +82,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(189, 104);
+            this.button1.Location = new System.Drawing.Point(183, 163);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(101, 26);
             this.button1.TabIndex = 8;
@@ -91,7 +92,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(310, 104);
+            this.button2.Location = new System.Drawing.Point(312, 163);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(101, 26);
             this.button2.TabIndex = 9;
@@ -106,7 +107,6 @@
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(198, 21);
             this.comboBox3.TabIndex = 10;
-            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // openFileDialog1
             // 
@@ -128,11 +128,22 @@
             this.textBox1.Size = new System.Drawing.Size(109, 20);
             this.textBox1.TabIndex = 12;
             // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(12, 91);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(62, 17);
+            this.checkBox3.TabIndex = 13;
+            this.checkBox3.Text = "запись";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(583, 153);
+            this.ClientSize = new System.Drawing.Size(583, 201);
+            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox3);
@@ -144,7 +155,6 @@
             this.Controls.Add(this.checkBox1);
             this.Name = "Form2";
             this.Text = "Input setup";
-            this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -162,5 +172,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }

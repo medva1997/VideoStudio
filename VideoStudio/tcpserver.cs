@@ -44,7 +44,7 @@ namespace VideoStudio
 
         public tcpserver(string ip_adress)
         {
-            this.ip_adress="192.168.1.4";
+            this.ip_adress=ip_adress;
             //wavein = new WaveIn();
             //wavein.WaveFormat = new WaveFormat(44100, 16, 2);
             //wavein.DataAvailable += new EventHandler<WaveInEventArgs>(Recorded);

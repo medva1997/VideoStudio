@@ -19,11 +19,12 @@ namespace VideoStudio
         private IVideoSource videosource;                   //переменная потока видео
         public bool all_right;                              // переменная правильности введенных данных(см обработку button1)
         private bool datacopping;                           // true когда мы востанавливаем данные в нашу форму, для временного открытия
-       
+
         public Form2()
         {
             all_right = false;
             InitializeComponent();
+            //установка параметров по умолчанию
             comboBox1.Visible = false;
             comboBox2.Visible = false;
             comboBox3.Visible = false;
@@ -31,7 +32,7 @@ namespace VideoStudio
             textBox1.Visible = false;
         }
 
-        public Form2(bool checkBox1_Checked, bool checkBox2_Checked, int index_of_combobox1, int index_of_combobox3, string text_of_combobox2, string textbox)// восстановление значений  после пересоздаения формы
+        public Form2(bool checkBox1_Checked, bool checkBox2_Checked, int index_of_combobox1, int index_of_combobox3, string text_of_combobox2, string textbox, bool checkbox3)// восстановление значений  после пересоздаения формы
         {
             all_right = false;
             InitializeComponent();
@@ -96,7 +97,6 @@ namespace VideoStudio
                     {
                         comboBox3.SelectedIndex = 0;
                     }
-
                 }
                 else
                 {
@@ -107,24 +107,19 @@ namespace VideoStudio
             }
             catch
             {
-                MessageBox.Show("Ошибка: 706");
+                MessageBox.Show("Ошибка: 706 (ошибка возврата данных)");
             }
-
-
+            checkBox3.Checked = checkbox3;
             datacopping = false;
            
         }
 
-        private void Form2_Load(object sender, EventArgs e)
-        {
-           
-        }
-
+       
         #region обработка событий
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e) // постановка/снятия галочки видео
         {
-            if (datacopping == false)
+            if (datacopping == false)//
             {
                 if (checkBox1.Checked == true)
                 {
@@ -137,12 +132,22 @@ namespace VideoStudio
                     comboBox1.Items.Add("Другой пк");
 
                     comboBox1.Visible = true;
+                    checkBox3.Checked = true;
                 }
                 else
                 {
                     comboBox1.Items.Clear();
                     comboBox1.Visible = false;
                     comboBox2.Visible = false;
+
+                    if (checkBox2.Checked == false)
+                    {
+                        checkBox3.Checked = false;
+                    }
+                    else
+                    {
+                        checkBox3.Checked = true;
+                    }
 
                 }
             }
@@ -164,8 +169,7 @@ namespace VideoStudio
                         {
                             comboBox2.Items.Add(smallform_of_camera.VideoDeviceMoniker);// выводим значение камеры
                             comboBox2.SelectedIndex = 0;
-                            comboBox2.Visible = true;//открываем форму
-                            videosource = smallform_of_camera.VideoDevice;// запоминаем выбранное
+                            comboBox2.Visible = true;//открываем путь к источнику                          
                         }
                         else //если окно закрыли без сохранения
                         {
@@ -178,8 +182,7 @@ namespace VideoStudio
                         comboBox2.Enabled = false;
                         comboBox2.Items.Clear();
                         comboBox2.Items.Add(Screen.AllScreens[0].DeviceName);
-                        comboBox2.SelectedIndex = 0;
-                        videosource = new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 40);// запоминаем выбранное
+                        comboBox2.SelectedIndex = 0;                      
                         comboBox2.Visible = true;
                     }
 
@@ -191,8 +194,7 @@ namespace VideoStudio
                         if (openFileDialog1.ShowDialog() == DialogResult.OK)
                         {
                             comboBox2.Text = openFileDialog1.FileName;
-                            comboBox2.Visible = true;
-                            videosource = new FileVideoSource(openFileDialog1.FileName);// запоминаем выбранное
+                            comboBox2.Visible = true;                           
                         }
                         else
                         {
@@ -224,7 +226,7 @@ namespace VideoStudio
             }
             catch
             {
-                MessageBox.Show("Ошибка: 707");
+                MessageBox.Show("Ошибка: 707( проблема с выбором видео источника)");
             }
         }
 
@@ -244,6 +246,7 @@ namespace VideoStudio
                     label1.Visible = true;
                     textBox1.Visible = true;
                     textBox1.Text = "44100";
+                    checkBox3.Checked = true;
                 }
                 else
                 {
@@ -251,14 +254,17 @@ namespace VideoStudio
                     comboBox3.Visible = false;
                     label1.Visible = false;
                     textBox1.Visible = false;
+                    if (checkBox1.Checked == false)
+                    {
+                        checkBox3.Checked = false;
+                    }
+                    else
+                    {
+                        checkBox3.Checked = true;
+                    }
 
                 }
             }
-        }
-
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-             //deviceNumber = comboBox3.SelectedIndex;
         }
 
         private void button1_Click(object sender, EventArgs e)// проверка на ошибки перед измением параметров родитедительского объекта
@@ -320,30 +326,33 @@ namespace VideoStudio
                     MessageBox.Show("Ошибка: 708");
                 }
 
-                    if (all_right == true)
-                    {
-                        this.Close();
-                    }
+            if (all_right == true)// если все верно форма закроется 
+            {
+                this.Close();
+            }
                
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)// нажатие отмены 
         {
-            all_right = false;
-            this.Close();
+            all_right = false;// поднимаем флаг, что не все параметры корректны => переинициализация непроизойдет
+            this.Close();// закрываем форму
         }
+
         #endregion
 
         #region Свойства
+
+        #region Свойства передачи выбранных потоков
+
         public NAudio.Wave.WaveIn Audio// свойство для передачи аудио потока
-        {
-            
+        {            
             get
             {
                 if (checkBox2.Checked == true)
                 {
                     NAudio.Wave.WaveIn sourceStream = new NAudio.Wave.WaveIn();
-                    sourceStream.DeviceNumber = index_combobox3;
+                    sourceStream.DeviceNumber =comboBox3.SelectedIndex;
                     sourceStream.WaveFormat = new NAudio.Wave.WaveFormat(Convert.ToInt32(textBox1.Text), NAudio.Wave.WaveIn.GetCapabilities(index_combobox3).Channels);
                     return sourceStream;
                 }
@@ -360,25 +369,38 @@ namespace VideoStudio
             {
                 if (checkBox1.Checked == true)
                 {
-                    if (comboBox1.SelectedIndex == 3)
+                    if (comboBox1.SelectedIndex == 0)// поток с камеры
+                    {
+                        videosource = smallform_of_camera.VideoDevice;
+                    }
+
+                    if (comboBox1.SelectedIndex == 1)// поток с монитора
+                    {
+
+                        videosource = new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 40);
+                    }
+
+                    if (comboBox1.SelectedIndex == 2)// поток из файла
+                    {
+                        videosource = new FileVideoSource(comboBox2.Text);
+                    }                    
+                    if (comboBox1.SelectedIndex == 3)// поток по url ссылке
                     {
 
                         videosource = new JPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
                     }
-                    if (comboBox1.SelectedIndex == 4)
+                    if (comboBox1.SelectedIndex == 4)// поток по url ссылке
                     {
 
                         videosource = new MJPEGStream(comboBox2.Text);// создаем новый поток с ссылкой
                     }
-                    if (comboBox1.SelectedIndex == 5)// если мы выбрали дрогой компьютер с нашей программой, обычный видео поток нам не подходит
+                    if (comboBox1.SelectedIndex == 5)// если мы выбрали дрогой компьютер с нашей программой,
+                    // обычный видео поток нам не подходит
                     {
-
-                        return null;
+                       videosource=null;
                     }
-                    else
-                    {
-                        return videosource;
-                    }
+                   
+                    return videosource;
                 }
                 else
                 {
@@ -387,8 +409,13 @@ namespace VideoStudio
             }   
         }
 
-        // свойства для сохранения информации о состоянии формы в родительский объект
-        public bool checkBox1_was_Checked
+        #endregion
+
+        //свойства настроек аудио и видео для сохранения 
+        //информации о состоянии формы в родительский объект
+        #region Свойства настроек видео
+
+        public bool checkBox1_was_Checked // выбран ли видео вход
         {
             get
             {
@@ -396,15 +423,7 @@ namespace VideoStudio
             }
         }
 
-        public bool checkBox2_was_Checked
-        {
-            get
-            {
-                return checkBox2.Checked;
-            }
-        }
-
-        public int index_combobox1
+        public int index_combobox1// тип выбранного видео устройства
         {
             get
             {
@@ -412,15 +431,7 @@ namespace VideoStudio
             }
         }
 
-        public int index_combobox3
-        {
-            get
-            {
-                return comboBox3.SelectedIndex;
-            }
-        }
-
-        public string text_of_combobox2
+        public string text_of_combobox2// моникер видео устройства
         {
             get
             {
@@ -428,15 +439,51 @@ namespace VideoStudio
             }
         }
 
-        public string text_of_textbox
+        
+        #endregion
+
+        #region Свойства настроек звука
+
+        public bool checkBox2_was_Checked  // выбран ли аудио вход
+        {
+            get
+            {
+                return checkBox2.Checked;
+            }
+        }
+
+        public int index_combobox3// выбранное аудио устройство
+        {
+            get
+            {
+                return comboBox3.SelectedIndex;
+            }
+        }        
+
+        public string text_of_textbox// частота дискретизации звука
         {
             get
             {
                 return textBox1.Text;
             }
         }
+
         #endregion
 
+        #region Свойства настроек записи
+
+        public bool CheckBox3_cheched// необходимо ли производить запись
+        {
+            get
+            {
+                return checkBox3.Checked;
+            }
+
+        }
+
+        #endregion
+
+        #endregion
 
     }
 }

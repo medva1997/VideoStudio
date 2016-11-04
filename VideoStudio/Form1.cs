@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-
 using AForge.Video;
 using AForge;
 using AForge.Video.DirectShow;
@@ -27,7 +26,7 @@ namespace VideoStudio
         private int lastselected_device = 0;                                                 // выбранный до этого девайс
         private int counter = 0;
        // private tcpserver server;
-        System.Windows.Forms.Timer time;
+       System.Windows.Forms.Timer  time;
         bool flag_to_out=false;
 
 
@@ -75,7 +74,6 @@ namespace VideoStudio
         #endregion
 
 
-     
         private tcpserver2 server;
         private bool Record_is_work = false;
         private string way_to_folder="";
@@ -83,9 +81,6 @@ namespace VideoStudio
         int videocouner;
         int audiocounter;
         byte[] buffer;
-        private System.Threading.Timer timer2 = null;
-
-        private Videomix videomixer; 
 
         public Form1()
         {
@@ -128,104 +123,44 @@ namespace VideoStudio
             settingbutton.Click += new System.EventHandler(settingbutton_Click); ;
             recbutton.Click += new System.EventHandler(recbutton_Click);
             cutbutton.Click += new System.EventHandler(cutbutton_Click); 
-            //time = new System.Windows.Forms.Timer();
-            //time.Interval = 31;
-            //time.Enabled = true;
-            //time.Tick += time_Tick;
-            //time.Start();
+            time = new System.Windows.Forms.Timer();
+            time.Interval = 31;
+            time.Enabled = true;
+            time.Tick += time_Tick;
+            time.Start();
 
-            timer2 = new System.Threading.Timer(Tick, sender,0,31);  // если надо, то в скобках указываем приоритет, например DispatcherPriority.Render
-          
-            
             
 
-
+            
         }
 
-
-        private void Tick(object sender)
+        private void worker()
         {
             for (int i = 0; i < number_of_small_panels; i++)
             {
                 preview[i].update_information();
 
             }
-            outpute_writer();
 
-            //System.Threading.Thread th = new System.Threading.Thread(outpute_writer);
-            //th.Start();
-            try
-            {
-                BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
-            }
-            catch
-            {
-
-            }
-            if (flag_to_out == true)
-            {
-                server.sender(preview[selected_device].Video_sourse_cach);
-                //if (audiocounter % 3 == 0)
-                //{
-                //    buffer = preview[0].Audiobuffer;
-                //    server.Audiobuffer = buffer;
-                //    server.Recorded();
-                //}
-            }           
-          
-        }
-
-        private void time_Tick(object sender, EventArgs e)
-        {
-            for (int i = 0; i < number_of_small_panels;i++ )
-            {
-                preview[i].update_information();               
-                
-            }
-            outpute_writer();
-
-            //System.Threading.Thread th = new System.Threading.Thread(outpute_writer);
-            //th.Start();
-
-            BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
-
-            if (flag_to_out == true)
-            {
-                server.sender(preview[selected_device].Video_sourse_cach);
-                //if (audiocounter % 3 == 0)
-                //{
-                //    buffer = preview[0].Audiobuffer;
-                //    server.Audiobuffer = buffer;
-                //    server.Recorded();
-                //}
-            }           
-          
-        }
-
-        private void outpute_writer()
-        {
             if (Record_is_work == true)
             {
-                if (((videocouner != 15 && videocouner != 29) && videocouner != 8))
+                if ((videocouner != 15 && videocouner != 30) && videocouner != 8)
                 {
+
                     for (int i = 0; i < number_of_small_panels; i++)
                     {
-
-
+                       
                         preview[i].videowriter();
-
+                        
 
                     }
                     videocouner++;
-
-                    videomixer.changepicture(preview[selected_device].Video_sourse_cach);
-                    videomixer.videowriter();
                 }
                 else
                 {
                     videocouner++;
                 }
-                if (videocouner > 30)
+                if (videocouner > 31)
                 {
                     videocouner = 0;
                 }
@@ -255,6 +190,30 @@ namespace VideoStudio
 
             }
 
+
+            preview[selected_device].semofvideo.WaitOne();
+            BigpictureBox.Image = preview[selected_device].Video_sourse_cach;
+            preview[selected_device].semofvideo.Release();
+            if (flag_to_out == true)
+            {
+                preview[selected_device].semofvideo.WaitOne();
+                server.sender(preview[selected_device].Video_sourse_cach);
+                preview[selected_device].semofvideo.Release();
+                //if (audiocounter % 3 == 0)
+                //{
+                //    buffer = preview[0].Audiobuffer;
+                //    server.Audiobuffer = buffer;
+                //    server.Recorded();
+                //}
+            }
+        }
+        
+
+        private void time_Tick(object sender, EventArgs e)
+        {
+            Thread work = new Thread(worker);
+            work.Start();          
+          
         }
 
         private void Image_changer(int newselected_device, int lastselected_device1)
@@ -564,13 +523,12 @@ namespace VideoStudio
 
           #endregion
 
-
         private void settingbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
             settings = new Form3();
              settings.Show();
              settings.FormClosing += settings_FormClosing;
-              server = new tcpserver2("192.168.1.4");
+             // server = new tcpserver2("192.168.0.41");
             
             
             
@@ -584,60 +542,26 @@ namespace VideoStudio
             //flag_to_out = true;
                    
         }
-
         private void recbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
         {
-            if (Record_is_work == true)
-            {
-                Record_is_work = false;
-                recbutton.Text = "Запись не производится";
-                for (int i = 0; i < preview.Length; i++)
-                {
-
-                    preview[i].stoprec();
-                }
-                recbutton.BackColor =Color.Green;
-               
-            }
-            else
-            {
-                if (videomixer != null)
-                {
-                    videomixer.stoprec();
-                    videomixer = null;
-                    GC.Collect();
-                }
-                videomixer = new Videomix(1280, 720);
-
-                string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
-                System.IO.Directory.CreateDirectory(new_way);
-                for (int i = 0; i < preview.Length; i++)
-                {
-                    preview[i].Cutter(new_way);
-                }
-                videomixer.Cutter(new_way);
-
-                recbutton.Text = "Идет запись";
-                recbutton.BackColor = Color.Red;
-                Record_is_work = true;
-
-            }
-           
-        }
-
-        private void cutbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
-        {
             Record_is_work = false;
-                  
-           
-            videomixer = new Videomix(1280, 720);
             string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
             for (int i = 0; i < preview.Length; i++)
             {
                 System.IO.Directory.CreateDirectory(new_way);
                 preview[i].Cutter(new_way);
             }
-            videomixer.Cutter(new_way);
+            Record_is_work = true;
+        }
+        private void cutbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки on air
+        {
+            Record_is_work = false;
+            string new_way = System.IO.Path.Combine(way_to_folder, Convert.ToString(DateTime.Now.ToString().Replace(':', '-')));
+            for (int i = 0; i < preview.Length; i++)
+            {
+                System.IO.Directory.CreateDirectory(new_way);
+                preview[i].Cutter(new_way);
+            }
             Record_is_work = true;
 
         }
