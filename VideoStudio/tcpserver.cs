@@ -29,6 +29,11 @@ namespace VideoStudio
 
         bool flag = false;// флаг работы функциии sender
 
+        public tcpserver()
+        {
+
+        }
+
         public tcpserver(int port)
         {
             local = IPAddress.Any;
@@ -91,12 +96,22 @@ namespace VideoStudio
 
         public void closing() //остановка всего
         {
-            flag = false;
-            writer.Flush();
-            writer.Close();
-            socketStream.Close();
-            connection.Close();
-            listener.Stop();
+            try
+            {
+                flag = false;
+                writer.Flush();
+                writer.Close();
+                socketStream.Close();
+                connection.Close();
+                listener.Stop();
+                MessageBox.Show("остановка потока");
+            }
+            catch
+            {
+               
+            }
+          
+                
         }   
 
 

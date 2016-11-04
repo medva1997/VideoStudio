@@ -25,11 +25,13 @@ namespace VideoStudio
         private int selected_device = 0;                                                    // выбранный сейчас девайс
         private int lastselected_device = 0;                                                // выбранный до этого девайс (не используется тк не используется функция)     
         private int counter = 0;                                                            // переменная счетчик при смене источников(не используется тк не используется функция)     
-        bool flag_to_out = false;                                                           // флаг необходимости транслировать
+        bool online = false;                                                                // флаг необходимости транслировать
         private bool Record_is_work = false;                                                // флаг необходимости записывать
         private string way_to_folder = "";                                                  // путь к папке назначения для хранения записанных файлов
         private int second_selected_device = -1;                                            // номер устройства для pip  (-1 -- pip отключено)      
         Bitmap result;                                                                      // результирующая картинка
+        private int nWidth = 1280;                                                          // разрешение выходного потока
+        private int nHeight = 720;                                                          // разрешение выходного потока
 
         //BigpictureBox
         private System.Windows.Forms.PictureBox BigpictureBox = new System.Windows.Forms.PictureBox();  // окно вывода главного изображения       
@@ -75,13 +77,18 @@ namespace VideoStudio
         #endregion
 
         //временные переменные
-        int nWidth = 1280;  // разрешение выходного потока
-        int nHeight = 720;  // разрешение выходного потока
+      
         int port = 5000;   // номер порта для вывода информации
+        bool rec_main;
+        bool rec_all;
+        string more_settings="";
+        string ipaddress;
 
-        private tcpserver server;
+        private tcpserver server=new tcpserver();
 
-        Form3 settings;
+        Form3 settings;                         // объект формы настроек
+        bool settings_had_been_opened = false;// флаг необходимости восстановить установленные настройки в окне настроек
+
         int videocouner;
         int audiocounter;
         byte[] buffer;
@@ -143,7 +150,7 @@ namespace VideoStudio
             result = result2;
             BigpictureBox.Image = result;// вывод в главное окно
 
-            if (flag_to_out == true)
+            if (online == true)
             {
                 server.sender(result); //отправка по сети
 
@@ -228,27 +235,78 @@ namespace VideoStudio
                     counter = 0;
                     lastselected_device = selected_device;
                 }
-
             }
-
         }
 
         private void settingbutton_Click(object sender, EventArgs e)//обработка нажатия кнопки настроек 
         {
-            settings = new Form3();
-             settings.Show();
-             settings.FormClosing += settings_FormClosing;
+            if (settings_had_been_opened == false)
+            {
+                settings = new Form3();
+                settings.Show();
+                settings.FormClosing += settings_FormClosing;
+            }
+            else
+            {
+                settings = new Form3();
+                //устанавливаем значения через свойства
+                settings.Widthofpicture = nWidth;
+                settings.Heightofpicture = nHeight;
+                settings.rec_main = rec_main;
+                settings.rec_all = rec_all;
+                settings.folder = way_to_folder;
+                settings.online = online;
+                settings.more_settings = more_settings;
+                settings.port = port;
+                settings.ipaddress = ipaddress;
+                // отображаем форму
+                settings.Show();
+                settings.FormClosing += settings_FormClosing;
+            }
             
         }
 
-        void settings_FormClosing(object sender, FormClosingEventArgs e)
+        void settings_FormClosing(object sender, FormClosingEventArgs e)// получение параметров с формы настроек
         {
-           
-           // Record_is_work =settings.do_record;
-            way_to_folder = settings.folder_for_records;
-            server = new tcpserver(port);
-            flag_to_out = true;
-                   
+            if (settings.allgood == true)
+            {
+                nWidth = settings.Widthofpicture;
+                nHeight = settings.Heightofpicture;
+                rec_main = settings.rec_main;
+                rec_all = settings.rec_all;
+                way_to_folder = settings.folder;
+
+                if (settings.online == true)
+                {
+                    ipaddress = settings.ipaddress;
+                    more_settings = settings.more_settings;
+                    port = settings.port;
+                    online = settings.online;
+
+                }
+                else
+                {
+                    ipaddress = "";
+                    more_settings = "";
+                    port = 5000;
+                    online = settings.online;
+                }
+                settings_had_been_opened = true;
+                settings.Dispose();
+
+                try
+                {
+                    server.closing();
+                }
+                catch
+                {
+
+                }
+
+                server = new tcpserver(port);
+
+
+            } 
         }
 
 

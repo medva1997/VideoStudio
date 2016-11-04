@@ -1,0 +1,65 @@
+список девайсов в системе
+ffmpeg -list_devices true -f dshow -i dummy
+
+захват с катеры и передача в файл
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" out.avi
+
+трансляция с камеры на другой комп
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam" -v 0 -vcodec mpeg4 -f mpegts udp:192.168.1.4:1234
+
+
+
+
+
+
+ffmpeg -i [камера] -f flv rtmp://[адрес]
+
+
+
+
+
+Настройки видеокодера для Google
+
+Протокол:	RTMP Flash Streaming
+Видеокодек:	H.264, Main 4.1
+Частота кадров:	30 кадров в секунду
+Частота ключевых кадров:	2 секунды
+Аудиокодек:	AAC-LC (аудио обязательно)
+Частота дискретизации аудио:	44,1 кГц
+Битрейт аудиопотока:	128 кбит/с, стерео
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" -acodec libmp3lame -ar 11025 -f rtp rtp://192.168.1.4:1234
+ffmpeg -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam" outpute.avi
+
+-f flv rtmp:///live/myStream.sdp
+
+
+см скриншот
+avconv -i in1.mp4 -i in2.mp4 -filter_complex amix=inputs=2 -q 1 -b:a 128k -preset libvpx-720p -threads 2 -y out.mp4
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" -s 560x320 f flv rtmp://localhost:8090/feed.ffm
+
+ffmpeg -i udp://239.192.192.1:1234 -s 560x320 http://localhost:8090/feed.ffm
+
+-vcodec libx264 -crf 27 -pix_fmt yuv420p -preset:v ultrafast -r 1 
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" -acodec libmp3lame -ar 11025 -f mpegts -vcodec libx264 -crf 27 -pix_fmt yuv420p -preset:v ultrafast -r 1  udp://192.168.1.4:1234
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" -acodec libmp3lame -ar 11025 -f mpegts -vcodec libx264 -crf 27 -pix_fmt yuv420p -preset:v ultrafast -r 1  out.avi
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 15 -vcodec mjpeg -i video="HD WebCam" -f rtp rtp://192.168.1.4:1234
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 30 -vcodec mjpeg4 -i video="HD WebCam" -f rtp rtp://192.168.1.4:1234
+
+ffmpeg -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam" -v 0 -vcodec mpeg4 -f mpegts udp:192.168.1.4:1234
+ffmpeg -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam" outpute.avi
+
+ffmpeg  -rtsp_transport tcp -i "rtsp://whatever.com:554/user=xxxx&password=xxxx&channel=2&stream=0.sdp" -codec copy mydumpfile.mpg
+
+
+ffmpeg -y -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam"   -s 1280x720   -f flv "rtp://192.168.1.4:2020"
+
+-rtsp_transport tcp
+
+ffmpeg -y -f dshow -video_size 1280x720 -framerate 30 -i video="HD WebCam"   -s 1280x720 -pix_fmt yuv420p -f mpegts  -rtsp_transport tcp "udp://192.168.1.4:2020"
